@@ -11,6 +11,8 @@
   "dependencies": {
     "@stripe/react-stripe-js": "^6.1.0",
     "@stripe/stripe-js": "^9.1.0",
+    "html2canvas-pro": "^2.0.2",
+    "jspdf": "^4.2.1",
     "next": "16.2.3",
     "openai": "^6.34.0",
     "pdfjs-dist": "^4.10.38",
