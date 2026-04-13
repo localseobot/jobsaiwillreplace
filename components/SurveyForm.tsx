@@ -67,6 +67,9 @@ export default function SurveyForm() {
     educationLevel: "",
   });
 
+  // Email state
+  const [email, setEmail] = useState("");
+
   // Resume upload state
   const [resumeFile, setResumeFile] = useState<File | null>(null);
   const [resumeText, setResumeText] = useState<string>("");
@@ -74,7 +77,7 @@ export default function SurveyForm() {
   const [resumeError, setResumeError] = useState<string>("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const totalSteps = 8; // Added resume step
+  const totalSteps = 9; // 7 questions + email + resume
   const progress = ((step + 1) / totalSteps) * 100;
 
   function update(field: keyof SurveyData, value: unknown) {
@@ -146,6 +149,8 @@ export default function SurveyForm() {
       case 6:
         return data.educationLevel.length > 0;
       case 7:
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email); // Valid email
+      case 8:
         return !resumeUploading; // Always can proceed (resume is optional)
       default:
         return false;
@@ -155,6 +160,18 @@ export default function SurveyForm() {
   async function handleSubmit() {
     setLoading(true);
     try {
+      // Save to database first (non-blocking — don't fail if DB is down)
+      fetch("/api/save-submission", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email,
+          surveyData: data,
+          resumeText: resumeText || null,
+        }),
+      }).catch(() => {}); // Fire and forget
+
+      // Generate report
       const res = await fetch("/api/generate-report", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -189,7 +206,7 @@ export default function SurveyForm() {
       <div className="mb-8">
         <div className="flex justify-between text-sm text-zinc-500 mb-2">
           <span>
-            {step < 7 ? `Question ${step + 1} of 7` : "Bonus: Resume Upload"}
+            {step < 7 ? `Question ${step + 1} of 7` : step === 7 ? "Almost there!" : "Bonus: Resume Upload"}
           </span>
           <span>{Math.round(progress)}% complete</span>
         </div>
@@ -412,6 +429,29 @@ export default function SurveyForm() {
         {step === 7 && (
           <div>
             <h2 className="text-2xl font-bold text-white mb-2">
+              Where should we send your report?
+            </h2>
+            <p className="text-zinc-400 mb-6">
+              Enter your email to receive your personalized AI impact report.
+            </p>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="you@example.com"
+              className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-zinc-500 focus:outline-none focus:border-red-500/50 focus:ring-1 focus:ring-red-500/50 text-lg"
+              autoFocus
+              onKeyDown={(e) => e.key === "Enter" && canProceed() && next()}
+            />
+            <p className="mt-4 text-zinc-500 text-sm">
+              We&apos;ll never spam you. Your email is only used to deliver your report.
+            </p>
+          </div>
+        )}
+
+        {step === 8 && (
+          <div>
+            <h2 className="text-2xl font-bold text-white mb-2">
               Upload your resume for a more personalized report
             </h2>
             <p className="text-zinc-400 mb-6">
@@ -505,7 +545,7 @@ export default function SurveyForm() {
           Back
         </button>
         <div className="flex gap-3">
-          {step === 7 && !resumeFile && (
+          {step === 8 && !resumeFile && (
             <button
               onClick={handleSubmit}
               disabled={loading}
