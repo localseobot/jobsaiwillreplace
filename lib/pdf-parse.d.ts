@@ -1,13 +1,2 @@
-declare module "pdf-parse" {
-  interface PDFData {
-    numpages: number;
-    numrender: number;
-    info: Record<string, unknown>;
-    metadata: Record<string, unknown>;
-    text: string;
-    version: string;
-  }
-
-  function pdf(dataBuffer: Buffer): Promise<PDFData>;
-  export default pdf;
-}
+// Type declarations no longer needed - using pdfjs-dist which has its own types
+export {};

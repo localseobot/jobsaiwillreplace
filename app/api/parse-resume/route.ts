@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getDocument } from "pdfjs-dist/legacy/build/pdf.mjs";
 
 export async function POST(req: NextRequest) {
   try {
@@ -10,19 +11,28 @@ export async function POST(req: NextRequest) {
     }
 
     const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
 
     let text = "";
 
     if (file.name.toLowerCase().endsWith(".pdf")) {
-      // Dynamic import to avoid Turbopack bundling issues
-      const pdf = (await import("pdf-parse")).default;
-      const data = await pdf(buffer);
-      text = data.text;
+      const uint8Array = new Uint8Array(bytes);
+      const doc = await getDocument({ data: uint8Array }).promise;
+
+      const pages: string[] = [];
+      for (let i = 1; i <= doc.numPages; i++) {
+        const page = await doc.getPage(i);
+        const content = await page.getTextContent();
+        const strings = content.items
+          .filter((item): item is { str: string } & typeof item => "str" in item)
+          .map((item) => (item as unknown as { str: string }).str);
+        pages.push(strings.join(" "));
+      }
+      text = pages.join("\n\n");
     } else if (
       file.name.toLowerCase().endsWith(".txt") ||
       file.name.toLowerCase().endsWith(".md")
     ) {
+      const buffer = Buffer.from(bytes);
       text = buffer.toString("utf-8");
     } else {
       return NextResponse.json(
