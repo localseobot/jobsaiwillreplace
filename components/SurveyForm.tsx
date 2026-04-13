@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { SurveyData } from "@/lib/types";
 
@@ -67,7 +67,14 @@ export default function SurveyForm() {
     educationLevel: "",
   });
 
-  const totalSteps = 7;
+  // Resume upload state
+  const [resumeFile, setResumeFile] = useState<File | null>(null);
+  const [resumeText, setResumeText] = useState<string>("");
+  const [resumeUploading, setResumeUploading] = useState(false);
+  const [resumeError, setResumeError] = useState<string>("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const totalSteps = 8; // Added resume step
   const progress = ((step + 1) / totalSteps) * 100;
 
   function update(field: keyof SurveyData, value: unknown) {
@@ -81,6 +88,45 @@ export default function SurveyForm() {
         ? prev.primaryTasks.filter((t) => t !== task)
         : [...prev.primaryTasks, task],
     }));
+  }
+
+  async function handleResumeUpload(file: File) {
+    setResumeFile(file);
+    setResumeUploading(true);
+    setResumeError("");
+
+    try {
+      const formData = new FormData();
+      formData.append("resume", file);
+
+      const res = await fetch("/api/parse-resume", {
+        method: "POST",
+        body: formData,
+      });
+
+      const result = await res.json();
+
+      if (!res.ok) {
+        throw new Error(result.error || "Failed to parse resume");
+      }
+
+      setResumeText(result.text);
+    } catch (err) {
+      setResumeError(err instanceof Error ? err.message : "Failed to parse resume");
+      setResumeFile(null);
+      setResumeText("");
+    } finally {
+      setResumeUploading(false);
+    }
+  }
+
+  function removeResume() {
+    setResumeFile(null);
+    setResumeText("");
+    setResumeError("");
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
   }
 
   function canProceed(): boolean {
@@ -99,6 +145,8 @@ export default function SurveyForm() {
         return data.usesAI.length > 0;
       case 6:
         return data.educationLevel.length > 0;
+      case 7:
+        return !resumeUploading; // Always can proceed (resume is optional)
       default:
         return false;
     }
@@ -110,7 +158,11 @@ export default function SurveyForm() {
       const res = await fetch("/api/generate-report", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ surveyData: data, tier: "paid" }),
+        body: JSON.stringify({
+          surveyData: data,
+          tier: "paid",
+          resumeText: resumeText || undefined,
+        }),
       });
       const result = await res.json();
       sessionStorage.setItem("surveyData", JSON.stringify(data));
@@ -137,7 +189,7 @@ export default function SurveyForm() {
       <div className="mb-8">
         <div className="flex justify-between text-sm text-zinc-500 mb-2">
           <span>
-            Question {step + 1} of {totalSteps}
+            {step < 7 ? `Question ${step + 1} of 7` : "Bonus: Resume Upload"}
           </span>
           <span>{Math.round(progress)}% complete</span>
         </div>
@@ -356,6 +408,92 @@ export default function SurveyForm() {
             </div>
           </div>
         )}
+
+        {step === 7 && (
+          <div>
+            <h2 className="text-2xl font-bold text-white mb-2">
+              Upload your resume for a more personalized report
+            </h2>
+            <p className="text-zinc-400 mb-6">
+              Optional — your resume helps us analyze your specific skills and experience for more accurate predictions.
+            </p>
+
+            {!resumeFile ? (
+              <label
+                className="flex flex-col items-center justify-center w-full h-48 rounded-2xl border-2 border-dashed border-white/20 bg-white/[0.02] hover:border-red-500/50 hover:bg-white/[0.04] transition-all cursor-pointer"
+                onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); }}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  const file = e.dataTransfer.files[0];
+                  if (file) handleResumeUpload(file);
+                }}
+              >
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept=".pdf,.txt"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) handleResumeUpload(file);
+                  }}
+                />
+                <svg className="w-12 h-12 text-zinc-500 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                </svg>
+                <span className="text-zinc-400 text-lg">
+                  Drop your resume here or <span className="text-red-400 underline">browse</span>
+                </span>
+                <span className="text-zinc-500 text-sm mt-2">PDF or TXT (max 5MB)</span>
+              </label>
+            ) : (
+              <div className="p-6 rounded-2xl border border-white/10 bg-white/[0.02]">
+                {resumeUploading ? (
+                  <div className="flex items-center gap-3">
+                    <svg className="animate-spin w-6 h-6 text-red-500" viewBox="0 0 24 24" fill="none">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                    </svg>
+                    <span className="text-zinc-300">Parsing your resume...</span>
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <svg className="w-8 h-8 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <div>
+                        <div className="text-white font-medium">{resumeFile.name}</div>
+                        <div className="text-zinc-500 text-sm">
+                          {(resumeFile.size / 1024).toFixed(0)} KB — parsed successfully
+                        </div>
+                      </div>
+                    </div>
+                    <button
+                      onClick={removeResume}
+                      className="text-zinc-500 hover:text-red-400 transition-colors"
+                    >
+                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {resumeError && (
+              <div className="mt-4 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
+                {resumeError}
+              </div>
+            )}
+
+            <p className="mt-4 text-zinc-500 text-sm text-center">
+              Your resume is processed securely and never stored. You can skip this step.
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Navigation */}
@@ -366,40 +504,51 @@ export default function SurveyForm() {
         >
           Back
         </button>
-        <button
-          onClick={next}
-          disabled={!canProceed() || loading}
-          className="px-8 py-3 rounded-xl bg-red-600 hover:bg-red-700 text-white font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-        >
-          {loading ? (
-            <>
-              <svg
-                className="animate-spin w-5 h-5"
-                viewBox="0 0 24 24"
-                fill="none"
-              >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                />
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                />
-              </svg>
-              Analyzing...
-            </>
-          ) : step === totalSteps - 1 ? (
-            "Generate My Report"
-          ) : (
-            "Next"
+        <div className="flex gap-3">
+          {step === 7 && !resumeFile && (
+            <button
+              onClick={handleSubmit}
+              disabled={loading}
+              className="px-6 py-3 rounded-xl border border-white/10 text-zinc-400 hover:text-white hover:border-white/20 transition-all"
+            >
+              Skip
+            </button>
           )}
-        </button>
+          <button
+            onClick={next}
+            disabled={!canProceed() || loading}
+            className="px-8 py-3 rounded-xl bg-red-600 hover:bg-red-700 text-white font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+          >
+            {loading ? (
+              <>
+                <svg
+                  className="animate-spin w-5 h-5"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  />
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                  />
+                </svg>
+                Analyzing...
+              </>
+            ) : step === totalSteps - 1 ? (
+              "Generate My Report"
+            ) : (
+              "Next"
+            )}
+          </button>
+        </div>
       </div>
     </div>
   );

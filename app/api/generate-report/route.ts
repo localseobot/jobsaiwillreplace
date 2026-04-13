@@ -4,14 +4,15 @@ import { SurveyData } from "@/lib/types";
 
 export async function POST(req: NextRequest) {
   try {
-    const { surveyData, tier } = (await req.json()) as {
+    const { surveyData, tier, resumeText } = (await req.json()) as {
       surveyData: SurveyData;
       tier: "free" | "paid";
+      resumeText?: string;
     };
 
     const prompt = tier === "paid" ? PAID_REPORT_PROMPT : FREE_REPORT_PROMPT;
 
-    const surveyContext = `
+    let surveyContext = `
 Job Title: ${surveyData.jobTitle}
 Industry: ${surveyData.industry}
 Years of Experience: ${surveyData.yearsExperience}
@@ -20,6 +21,10 @@ Repetitive Task Percentage: ${surveyData.repetitivePercent}%
 Currently Uses AI: ${surveyData.usesAI}
 Education Level: ${surveyData.educationLevel}
 `;
+
+    if (resumeText) {
+      surveyContext += `\n--- RESUME CONTENT ---\n${resumeText}\n--- END RESUME ---\n\nUse the resume details above to provide more specific and personalized analysis. Reference their actual skills, experience, and job history in your recommendations.`;
+    }
 
     const completion = await getOpenAI().chat.completions.create({
       model: "gpt-4o",
