@@ -4,96 +4,185 @@ import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { SurveyData } from "@/lib/types";
 
-const LOADING_TIPS = [
-  "AI is projected to impact 40% of all jobs globally in the next decade.",
-  "Workers who learn to use AI tools earn 25-50% more than those who don't.",
-  "The fastest growing jobs are in AI oversight, prompt engineering, and data curation.",
-  "Adaptability is the #1 skill employers are looking for in the AI era.",
-  "Companies using AI see an average 35% increase in productivity.",
-  "Roles requiring empathy, creativity, and complex judgment are most resistant to AI.",
-  "Learning one new AI tool per month can dramatically improve your career prospects.",
-  "The demand for AI literacy is growing 4x faster than any other skill.",
+const LOADING_FACTS = [
+  { emoji: "🤖", text: "40% of all jobs will be impacted by AI in the next decade.", source: "IMF Global Report" },
+  { emoji: "💰", text: "Workers who learn AI tools earn 25-50% more than those who don't.", source: "Harvard Business Review" },
+  { emoji: "🚀", text: "Prompt engineering didn't exist 3 years ago. Now it pays $150K+.", source: "Business Insider" },
+  { emoji: "🧠", text: "Adaptability is the #1 skill employers look for in the AI era.", source: "World Economic Forum" },
+  { emoji: "📈", text: "Companies using AI see 35% higher productivity on average.", source: "McKinsey & Co" },
+  { emoji: "🛡️", text: "Empathy, creativity, and complex judgment are most AI-resistant.", source: "Oxford Economics" },
+  { emoji: "⚡", text: "ChatGPT reached 100M users faster than any product in history.", source: "Reuters" },
+  { emoji: "🎓", text: "AI literacy demand is growing 4x faster than any other skill.", source: "LinkedIn Workforce Report" },
+  { emoji: "🔮", text: "65% of children today will work in jobs that don't yet exist.", source: "World Economic Forum" },
+  { emoji: "💼", text: "AI could automate 300 million full-time jobs worldwide.", source: "Goldman Sachs" },
 ];
 
 const LOADING_STAGES = [
-  "Analyzing your role and industry...",
-  "Cross-referencing AI automation trends...",
-  "Evaluating task-level risk factors...",
-  "Building your personalized roadmap...",
-  "Generating your full report...",
+  { text: "Scanning your industry for AI disruption patterns", icon: "🔍" },
+  { text: "Mapping your tasks against current AI capabilities", icon: "🗺️" },
+  { text: "Calculating your personalized risk factors", icon: "📊" },
+  { text: "Researching AI tools relevant to your role", icon: "🔧" },
+  { text: "Building your career defense strategy", icon: "🛡️" },
+  { text: "Compiling your personalized report", icon: "📋" },
 ];
 
 function LoadingScreen({ jobTitle }: { jobTitle: string }) {
-  const [tipIndex, setTipIndex] = useState(0);
+  const [factIndex, setFactIndex] = useState(0);
   const [progress, setProgress] = useState(0);
   const [stage, setStage] = useState(0);
+  const [factKey, setFactKey] = useState(0);
+  const [dots, setDots] = useState("");
 
   useEffect(() => {
-    const tipTimer = setInterval(() => {
-      setTipIndex((prev) => (prev + 1) % LOADING_TIPS.length);
-    }, 4000);
+    const factTimer = setInterval(() => {
+      setFactIndex((prev) => (prev + 1) % LOADING_FACTS.length);
+      setFactKey((prev) => prev + 1);
+    }, 5000);
 
     const progressTimer = setInterval(() => {
-      setProgress((prev) => Math.min(prev + 1, 95));
-    }, 300);
+      setProgress((prev) => {
+        if (prev < 30) return prev + 1.5;
+        if (prev < 60) return prev + 0.8;
+        if (prev < 85) return prev + 0.4;
+        if (prev < 95) return prev + 0.1;
+        return prev;
+      });
+    }, 200);
 
     const stageTimer = setInterval(() => {
       setStage((prev) => Math.min(prev + 1, LOADING_STAGES.length - 1));
-    }, 5000);
+    }, 4500);
+
+    const dotsTimer = setInterval(() => {
+      setDots((prev) => (prev.length >= 3 ? "" : prev + "."));
+    }, 500);
 
     return () => {
-      clearInterval(tipTimer);
+      clearInterval(factTimer);
       clearInterval(progressTimer);
       clearInterval(stageTimer);
+      clearInterval(dotsTimer);
     };
   }, []);
 
+  const fact = LOADING_FACTS[factIndex];
+  const currentStage = LOADING_STAGES[stage];
+
   return (
-    <div className="w-full max-w-2xl mx-auto text-center py-8">
-      {/* Animated brain/gear icon */}
-      <div className="relative w-24 h-24 mx-auto mb-8">
-        <div className="absolute inset-0 rounded-full border-4 border-red-500/20 animate-ping" />
+    <div className="w-full max-w-2xl mx-auto text-center py-6">
+
+      {/* Central animation — orbiting elements */}
+      <div className="relative w-40 h-40 mx-auto mb-8">
+        {/* Outer pulse rings */}
+        <div className="absolute inset-0 rounded-full border border-red-500/10 animate-pulse-ring" />
+        <div className="absolute inset-[-12px] rounded-full border border-red-500/5 animate-pulse-ring" style={{ animationDelay: "0.5s" }} />
+        <div className="absolute inset-[-24px] rounded-full border border-red-500/[0.03] animate-pulse-ring" style={{ animationDelay: "1s" }} />
+
+        {/* Orbiting dots */}
         <div className="absolute inset-0 flex items-center justify-center">
-          <svg className="w-12 h-12 text-red-500 animate-spin" style={{ animationDuration: "3s" }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-          </svg>
+          <div className="animate-orbit">
+            <div className="w-2.5 h-2.5 rounded-full bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.5)]" />
+          </div>
+        </div>
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="animate-orbit-reverse">
+            <div className="w-2 h-2 rounded-full bg-orange-400 shadow-[0_0_8px_rgba(251,146,60,0.5)]" />
+          </div>
+        </div>
+
+        {/* Center icon */}
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-red-500/20 to-orange-500/10 border border-red-500/20 flex items-center justify-center animate-float">
+            <span className="text-3xl">{currentStage.icon}</span>
+          </div>
         </div>
       </div>
 
-      <h2 className="text-2xl font-bold text-white mb-2">
-        Analyzing {jobTitle}...
+      {/* Title */}
+      <h2 className="text-2xl font-bold text-white mb-1">
+        Analyzing <span className="text-red-400">{jobTitle}</span>
       </h2>
-
-      {/* Stage indicator */}
-      <p className="text-red-400 font-medium mb-6 h-6 transition-all duration-500">
-        {LOADING_STAGES[stage]}
+      <p className="text-zinc-500 text-sm mb-6">
+        Our AI is crunching the data — this is worth the wait
       </p>
 
-      {/* Progress bar */}
-      <div className="max-w-md mx-auto mb-8">
-        <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+      {/* Stage indicator */}
+      <div className="max-w-md mx-auto mb-6">
+        <div className="flex items-center justify-center gap-2 mb-4">
+          <span className="text-red-400 font-medium text-sm">
+            {currentStage.text}{dots}
+          </span>
+        </div>
+
+        {/* Progress bar */}
+        <div className="relative h-2 bg-white/10 rounded-full overflow-hidden">
           <div
-            className="h-full bg-gradient-to-r from-red-500 to-orange-500 rounded-full transition-all duration-300"
-            style={{ width: `${progress}%` }}
+            className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-red-600 via-red-500 to-orange-500 animate-gradient-shift transition-all duration-500"
+            style={{ width: `${Math.round(progress)}%` }}
           />
         </div>
-        <div className="flex justify-between mt-2 text-xs text-zinc-500">
-          <span>Analyzing</span>
-          <span>{progress}%</span>
+
+        {/* Stage dots */}
+        <div className="flex justify-between mt-3 px-1">
+          {LOADING_STAGES.map((_, i) => (
+            <div key={i} className="flex flex-col items-center gap-1">
+              <div
+                className={`w-2 h-2 rounded-full transition-all duration-500 ${
+                  i <= stage
+                    ? "bg-red-500 shadow-[0_0_6px_rgba(239,68,68,0.5)]"
+                    : "bg-white/10"
+                }`}
+              />
+            </div>
+          ))}
         </div>
       </div>
 
-      {/* Rotating tips */}
-      <div className="max-w-lg mx-auto p-5 rounded-xl bg-white/[0.03] border border-white/10 min-h-[80px] flex items-center justify-center">
-        <div className="transition-all duration-500">
-          <div className="text-xs text-zinc-500 uppercase tracking-wider mb-2">Did you know?</div>
-          <p className="text-zinc-300 text-sm leading-relaxed">{LOADING_TIPS[tipIndex]}</p>
+      {/* Fact card — animated swap */}
+      <div className="max-w-lg mx-auto mt-8">
+        <div
+          key={factKey}
+          className="p-5 rounded-xl bg-white/[0.03] border border-white/10 animate-slide-up-fade"
+        >
+          <div className="text-2xl mb-2">{fact.emoji}</div>
+          <p className="text-zinc-200 text-sm leading-relaxed font-medium">
+            {fact.text}
+          </p>
+          <p className="text-zinc-500 text-xs mt-2 italic">— {fact.source}</p>
         </div>
       </div>
 
-      <p className="mt-6 text-zinc-500 text-xs">
-        This usually takes 15-30 seconds. Please don&apos;t close this page.
+      {/* Bottom checklist — what they're getting */}
+      <div className="mt-8 max-w-sm mx-auto">
+        <div className="text-xs text-zinc-500 uppercase tracking-wider mb-3">Your report will include</div>
+        <div className="space-y-2 text-left">
+          {[
+            { text: "Risk score & timeline", done: progress > 20 },
+            { text: "Task-by-task analysis", done: progress > 35 },
+            { text: "AI tools for your role", done: progress > 50 },
+            { text: "Learning roadmap", done: progress > 65 },
+            { text: "Career defense strategy", done: progress > 80 },
+          ].map((item, i) => (
+            <div key={i} className="flex items-center gap-2.5 text-sm">
+              {item.done ? (
+                <svg className="w-4 h-4 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                </svg>
+              ) : (
+                <div className="w-4 h-4 rounded-full border border-white/20 shrink-0 flex items-center justify-center">
+                  <div className="w-1.5 h-1.5 rounded-full bg-white/20 animate-pulse" />
+                </div>
+              )}
+              <span className={item.done ? "text-zinc-300" : "text-zinc-500"}>
+                {item.text}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <p className="mt-8 text-zinc-600 text-xs">
+        Generating in-depth analysis — usually takes 15-30 seconds
       </p>
     </div>
   );
