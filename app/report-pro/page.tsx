@@ -63,20 +63,86 @@ function SectionHeader({ icon, title, subtitle }: { icon: React.ReactNode; title
   );
 }
 
+interface Benchmarks {
+  totalAssessments: number;
+  percentile: number;
+  avgAll: number | null;
+  avgIndustry: { score: number; count: number } | null;
+  avgJob: { score: number; count: number } | null;
+}
+
+function BenchmarkSection({ benchmarks, riskScore }: { benchmarks: Benchmarks; riskScore: number }) {
+  if (benchmarks.totalAssessments < 5) return null;
+
+  return (
+    <section className="mt-12">
+      <SectionHeader
+        icon={<svg className="w-6 h-6 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>}
+        title="How You Compare"
+        subtitle={`Based on ${benchmarks.totalAssessments.toLocaleString()} assessments`}
+      />
+      <div className="grid md:grid-cols-3 gap-4">
+        <div className="p-5 rounded-2xl border border-indigo-500/20 bg-indigo-500/5 text-center">
+          <div className="text-3xl font-bold text-indigo-400">{benchmarks.percentile}%</div>
+          <div className="text-zinc-400 text-sm mt-1">
+            of people scored <span className="text-white">higher risk</span> than you
+          </div>
+        </div>
+        {benchmarks.avgAll !== null && (
+          <div className="p-5 rounded-2xl border border-white/10 bg-white/[0.02] text-center">
+            <div className="text-3xl font-bold text-white">{benchmarks.avgAll}</div>
+            <div className="text-zinc-400 text-sm mt-1">Average score across all roles</div>
+            <div className={`text-xs mt-2 font-medium ${riskScore < benchmarks.avgAll ? "text-green-400" : "text-red-400"}`}>
+              You are {Math.abs(riskScore - benchmarks.avgAll)} pts {riskScore < benchmarks.avgAll ? "below" : "above"} avg
+            </div>
+          </div>
+        )}
+        {benchmarks.avgIndustry && (
+          <div className="p-5 rounded-2xl border border-white/10 bg-white/[0.02] text-center">
+            <div className="text-3xl font-bold text-white">{benchmarks.avgIndustry.score}</div>
+            <div className="text-zinc-400 text-sm mt-1">Industry average ({benchmarks.avgIndustry.count} assessments)</div>
+            <div className={`text-xs mt-2 font-medium ${riskScore < benchmarks.avgIndustry.score ? "text-green-400" : "text-red-400"}`}>
+              You are {Math.abs(riskScore - benchmarks.avgIndustry.score)} pts {riskScore < benchmarks.avgIndustry.score ? "below" : "above"} avg
+            </div>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
 export default function ProReportPage() {
   const router = useRouter();
   const [report, setReport] = useState<PaidReport | null>(null);
   const [surveyData, setSurveyData] = useState<SurveyData | null>(null);
+  const [reportId, setReportId] = useState<string | null>(null);
+  const [benchmarks, setBenchmarks] = useState<Benchmarks | null>(null);
+  const [linkCopied, setLinkCopied] = useState(false);
+
   useEffect(() => {
     const storedReport = sessionStorage.getItem("paidReport");
     const storedSurvey = sessionStorage.getItem("surveyData");
     if (storedReport && storedSurvey) {
       setReport(JSON.parse(storedReport));
       setSurveyData(JSON.parse(storedSurvey));
+      // Get report ID if available
+      const storedId = sessionStorage.getItem("reportId");
+      if (storedId) setReportId(storedId);
     } else {
       router.push("/survey");
     }
   }, [router]);
+
+  // Fetch benchmarks once report loads
+  useEffect(() => {
+    if (!report || !surveyData) return;
+    fetch(
+      `/api/benchmarks?score=${report.riskScore}&jobTitle=${encodeURIComponent(surveyData.jobTitle)}&industry=${encodeURIComponent(surveyData.industry)}`
+    )
+      .then((r) => r.json())
+      .then((d) => { if (!d.error) setBenchmarks(d); })
+      .catch(() => {});
+  }, [report, surveyData]);
 
   if (!report) {
     return (
@@ -103,7 +169,7 @@ export default function ProReportPage() {
             <div className="inline-block px-3 py-1 bg-red-600 text-white text-xs font-bold rounded-full uppercase mb-4">
               Full AI Impact Report
             </div>
-            <h1 className="text-4xl font-bold text-white">
+            <h1 className="text-3xl md:text-4xl font-bold text-white">
               Your AI Career Strategy Report
             </h1>
             <p className="text-zinc-400 mt-2 text-lg">
@@ -115,12 +181,29 @@ export default function ProReportPage() {
 
           {/* Share & Download Bar */}
           <div className="mb-10 p-6 rounded-2xl border border-white/10 bg-white/[0.02]">
-            <div className="flex flex-col md:flex-row items-center gap-6">
+            <div className="flex flex-col md:flex-row items-center gap-4">
               <div className="flex-1 text-center md:text-left">
                 <h3 className="text-white font-semibold text-lg">Download Your Report</h3>
                 <p className="text-zinc-400 text-sm mt-1">Get your full AI Career Impact Assessment as a professional PDF.</p>
               </div>
-              <DownloadReport report={report} surveyData={surveyData!} />
+              <div className="flex items-center gap-3">
+                <DownloadReport report={report} surveyData={surveyData!} />
+                {reportId && (
+                  <button
+                    onClick={() => {
+                      navigator.clipboard.writeText(`https://jobsaiwillreplace.com/r/${reportId}`);
+                      setLinkCopied(true);
+                      setTimeout(() => setLinkCopied(false), 2500);
+                    }}
+                    className="flex items-center gap-2 px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white hover:bg-white/10 transition-colors text-sm font-medium whitespace-nowrap"
+                  >
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                    </svg>
+                    {linkCopied ? "Link Copied!" : "Copy Link"}
+                  </button>
+                )}
+              </div>
             </div>
           </div>
 
@@ -132,11 +215,14 @@ export default function ProReportPage() {
               </svg>
               Share Your Results
             </h3>
-            <ShareCard report={report} surveyData={surveyData!} />
+            <ShareCard report={report} surveyData={surveyData!} reportId={reportId} />
           </div>
 
           {/* Risk Score & Core Info */}
           <ReportCard report={report} />
+
+          {/* Benchmarks - Compare with others */}
+          {benchmarks && <BenchmarkSection benchmarks={benchmarks} riskScore={report.riskScore} />}
 
           {/* Immediate Actions - placed early for urgency */}
           {report.immediateActions && report.immediateActions.length > 0 && (
@@ -500,6 +586,59 @@ export default function ProReportPage() {
               </div>
             </section>
           )}
+
+          {/* Coaching / Next Steps CTA */}
+          <section className="mt-16 mb-8">
+            <div className="p-8 rounded-2xl bg-gradient-to-br from-red-500/10 via-orange-500/5 to-transparent border border-red-500/20">
+              <div className="text-center max-w-2xl mx-auto">
+                <div className="inline-block px-3 py-1 bg-orange-500/20 text-orange-400 text-xs font-bold rounded-full uppercase mb-4">
+                  Take the Next Step
+                </div>
+                <h2 className="text-2xl font-bold text-white mb-3">
+                  Ready to Future-Proof Your Career?
+                </h2>
+                <p className="text-zinc-400 mb-8 leading-relaxed">
+                  Your report is just the beginning. Take action on the recommendations above,
+                  and consider investing in your skills to stay ahead of AI disruption.
+                </p>
+                <div className="grid md:grid-cols-3 gap-4 text-left">
+                  <a
+                    href="https://www.coursera.org/browse/information-technology/artificial-intelligence"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-4 rounded-xl bg-white/[0.03] border border-white/10 hover:bg-white/[0.06] transition-colors group"
+                  >
+                    <div className="text-white font-semibold group-hover:text-orange-400 transition-colors">
+                      AI & ML Courses
+                    </div>
+                    <p className="text-zinc-500 text-sm mt-1">Coursera&apos;s top-rated AI programs</p>
+                  </a>
+                  <a
+                    href="https://www.linkedin.com/learning/topics/artificial-intelligence"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-4 rounded-xl bg-white/[0.03] border border-white/10 hover:bg-white/[0.06] transition-colors group"
+                  >
+                    <div className="text-white font-semibold group-hover:text-blue-400 transition-colors">
+                      LinkedIn Learning
+                    </div>
+                    <p className="text-zinc-500 text-sm mt-1">AI skills employers look for</p>
+                  </a>
+                  <a
+                    href="https://www.udemy.com/topic/artificial-intelligence/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-4 rounded-xl bg-white/[0.03] border border-white/10 hover:bg-white/[0.06] transition-colors group"
+                  >
+                    <div className="text-white font-semibold group-hover:text-purple-400 transition-colors">
+                      Udemy AI Bootcamps
+                    </div>
+                    <p className="text-zinc-500 text-sm mt-1">Hands-on AI tool training</p>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </section>
 
         </div>
       </main>

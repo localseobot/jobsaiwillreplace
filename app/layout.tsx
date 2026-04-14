@@ -28,6 +28,22 @@ export const metadata: Metadata = {
     description:
       "Find out how likely AI is to replace your job. Get your personalized AI impact report.",
     type: "website",
+    url: "https://jobsaiwillreplace.com",
+    images: [
+      {
+        url: "https://jobsaiwillreplace.com/api/og",
+        width: 1200,
+        height: 630,
+        alt: "Jobs AI Will Replace - AI Career Impact Assessment",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Will AI Replace Your Job?",
+    description:
+      "Free AI-powered career impact assessment. Get your risk score, timeline, and action plan.",
+    images: ["https://jobsaiwillreplace.com/api/og"],
   },
 };
 

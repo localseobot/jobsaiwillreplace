@@ -1,8 +1,103 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { SurveyData } from "@/lib/types";
+
+const LOADING_TIPS = [
+  "AI is projected to impact 40% of all jobs globally in the next decade.",
+  "Workers who learn to use AI tools earn 25-50% more than those who don't.",
+  "The fastest growing jobs are in AI oversight, prompt engineering, and data curation.",
+  "Adaptability is the #1 skill employers are looking for in the AI era.",
+  "Companies using AI see an average 35% increase in productivity.",
+  "Roles requiring empathy, creativity, and complex judgment are most resistant to AI.",
+  "Learning one new AI tool per month can dramatically improve your career prospects.",
+  "The demand for AI literacy is growing 4x faster than any other skill.",
+];
+
+const LOADING_STAGES = [
+  "Analyzing your role and industry...",
+  "Cross-referencing AI automation trends...",
+  "Evaluating task-level risk factors...",
+  "Building your personalized roadmap...",
+  "Generating your full report...",
+];
+
+function LoadingScreen({ jobTitle }: { jobTitle: string }) {
+  const [tipIndex, setTipIndex] = useState(0);
+  const [progress, setProgress] = useState(0);
+  const [stage, setStage] = useState(0);
+
+  useEffect(() => {
+    const tipTimer = setInterval(() => {
+      setTipIndex((prev) => (prev + 1) % LOADING_TIPS.length);
+    }, 4000);
+
+    const progressTimer = setInterval(() => {
+      setProgress((prev) => Math.min(prev + 1, 95));
+    }, 300);
+
+    const stageTimer = setInterval(() => {
+      setStage((prev) => Math.min(prev + 1, LOADING_STAGES.length - 1));
+    }, 5000);
+
+    return () => {
+      clearInterval(tipTimer);
+      clearInterval(progressTimer);
+      clearInterval(stageTimer);
+    };
+  }, []);
+
+  return (
+    <div className="w-full max-w-2xl mx-auto text-center py-8">
+      {/* Animated brain/gear icon */}
+      <div className="relative w-24 h-24 mx-auto mb-8">
+        <div className="absolute inset-0 rounded-full border-4 border-red-500/20 animate-ping" />
+        <div className="absolute inset-0 flex items-center justify-center">
+          <svg className="w-12 h-12 text-red-500 animate-spin" style={{ animationDuration: "3s" }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+        </div>
+      </div>
+
+      <h2 className="text-2xl font-bold text-white mb-2">
+        Analyzing {jobTitle}...
+      </h2>
+
+      {/* Stage indicator */}
+      <p className="text-red-400 font-medium mb-6 h-6 transition-all duration-500">
+        {LOADING_STAGES[stage]}
+      </p>
+
+      {/* Progress bar */}
+      <div className="max-w-md mx-auto mb-8">
+        <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+          <div
+            className="h-full bg-gradient-to-r from-red-500 to-orange-500 rounded-full transition-all duration-300"
+            style={{ width: `${progress}%` }}
+          />
+        </div>
+        <div className="flex justify-between mt-2 text-xs text-zinc-500">
+          <span>Analyzing</span>
+          <span>{progress}%</span>
+        </div>
+      </div>
+
+      {/* Rotating tips */}
+      <div className="max-w-lg mx-auto p-5 rounded-xl bg-white/[0.03] border border-white/10 min-h-[80px] flex items-center justify-center">
+        <div className="transition-all duration-500">
+          <div className="text-xs text-zinc-500 uppercase tracking-wider mb-2">Did you know?</div>
+          <p className="text-zinc-300 text-sm leading-relaxed">{LOADING_TIPS[tipIndex]}</p>
+        </div>
+      </div>
+
+      <p className="mt-6 text-zinc-500 text-xs">
+        This usually takes 15-30 seconds. Please don&apos;t close this page.
+      </p>
+    </div>
+  );
+}
 
 const INDUSTRIES = [
   "Technology",
@@ -57,6 +152,7 @@ export default function SurveyForm() {
   const router = useRouter();
   const [step, setStep] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [generationError, setGenerationError] = useState(false);
   const [data, setData] = useState<SurveyData>({
     jobTitle: "",
     industry: "",
@@ -181,14 +277,31 @@ export default function SurveyForm() {
           resumeText: resumeText || undefined,
         }),
       });
+
+      if (!res.ok) {
+        throw new Error("Report generation failed");
+      }
+
       const result = await res.json();
       sessionStorage.setItem("surveyData", JSON.stringify(data));
       sessionStorage.setItem("paidReport", JSON.stringify(result.report));
+
+      // Save report to DB for shareable link (non-blocking)
+      fetch("/api/save-report", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ report: result.report, surveyData: data }),
+      })
+        .then((r) => r.json())
+        .then((d) => {
+          if (d.id) sessionStorage.setItem("reportId", d.id);
+        })
+        .catch(() => {});
+
       router.push("/report-pro");
     } catch {
-      alert("Something went wrong generating your report. Please try again.");
-    } finally {
       setLoading(false);
+      setGenerationError(true);
     }
   }
 
@@ -198,6 +311,43 @@ export default function SurveyForm() {
     } else {
       handleSubmit();
     }
+  }
+
+  // Error state with retry
+  if (generationError) {
+    return (
+      <div className="w-full max-w-2xl mx-auto text-center py-12">
+        <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center">
+          <svg className="w-8 h-8 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+          </svg>
+        </div>
+        <h2 className="text-2xl font-bold text-white mb-3">Something went wrong</h2>
+        <p className="text-zinc-400 mb-8 max-w-md mx-auto">
+          Our AI engine hit a snag while generating your report. This usually resolves quickly.
+        </p>
+        <button
+          onClick={() => {
+            setGenerationError(false);
+            handleSubmit();
+          }}
+          className="inline-flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white font-semibold px-8 py-4 rounded-xl transition-all"
+        >
+          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+          Try Again
+        </button>
+        <p className="mt-4 text-zinc-500 text-sm">
+          If the problem persists, try refreshing the page.
+        </p>
+      </div>
+    );
+  }
+
+  // Loading state with animated tips
+  if (loading) {
+    return <LoadingScreen jobTitle={data.jobTitle} />;
   }
 
   return (

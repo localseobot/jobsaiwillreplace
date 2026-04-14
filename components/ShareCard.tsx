@@ -28,13 +28,17 @@ function getTopActions(report: PaidReport): string {
 export default function ShareCard({
   report,
   surveyData,
+  reportId,
 }: {
   report: PaidReport;
   surveyData: SurveyData;
+  reportId?: string | null;
 }) {
   const [copiedLink, setCopiedLink] = useState(false);
 
-  const siteUrl = "https://jobsaiwillreplace.com";
+  const siteUrl = reportId
+    ? `https://jobsaiwillreplace.com/r/${reportId}`
+    : "https://jobsaiwillreplace.com";
   const riskLabel = getRiskLabel(report.riskScore);
   const positiveFrame = getPositiveFraming(report.riskScore);
   const topActions = getTopActions(report);
@@ -89,7 +93,7 @@ export default function ShareCard({
     <div className="space-y-5">
       {/* Preview of what will be shared */}
       <div className={`p-5 rounded-2xl border ${scoreBg}`}>
-        <div className="flex items-center gap-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
           <div className={`text-4xl font-bold ${scoreColor}`}>
             {report.riskScore}<span className="text-lg text-zinc-500">/100</span>
           </div>
