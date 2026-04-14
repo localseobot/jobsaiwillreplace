@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -67,8 +67,6 @@ export default function ProReportPage() {
   const router = useRouter();
   const [report, setReport] = useState<PaidReport | null>(null);
   const [surveyData, setSurveyData] = useState<SurveyData | null>(null);
-  const reportContentRef = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
     const storedReport = sessionStorage.getItem("paidReport");
     const storedSurvey = sessionStorage.getItem("surveyData");
@@ -119,30 +117,23 @@ export default function ProReportPage() {
           <div className="mb-10 p-6 rounded-2xl border border-white/10 bg-white/[0.02]">
             <div className="flex flex-col md:flex-row items-center gap-6">
               <div className="flex-1 text-center md:text-left">
-                <h3 className="text-white font-semibold text-lg">Share Your Results</h3>
-                <p className="text-zinc-400 text-sm mt-1">Download your branded score card or the full report as a PDF.</p>
+                <h3 className="text-white font-semibold text-lg">Download Your Report</h3>
+                <p className="text-zinc-400 text-sm mt-1">Get your full AI Career Impact Assessment as a professional PDF.</p>
               </div>
-              <DownloadReport reportRef={reportContentRef} jobTitle={surveyData?.jobTitle || "report"} />
+              <DownloadReport report={report} surveyData={surveyData!} />
             </div>
           </div>
 
-          {/* Shareable Social Card */}
+          {/* Social Media Sharing */}
           <div className="mb-10">
             <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
               <svg className="w-5 h-5 text-pink-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
               </svg>
-              Share on Social Media
+              Share Your Results
             </h3>
-            <ShareCard
-              riskScore={report.riskScore}
-              jobTitle={surveyData?.jobTitle || ""}
-              timelineEstimate={report.timelineEstimate}
-            />
+            <ShareCard report={report} surveyData={surveyData!} />
           </div>
-
-          {/* Report content wrapper for PDF export */}
-          <div ref={reportContentRef}>
 
           {/* Risk Score & Core Info */}
           <ReportCard report={report} />
@@ -510,7 +501,6 @@ export default function ProReportPage() {
             </section>
           )}
 
-          </div>{/* End reportContentRef wrapper */}
         </div>
       </main>
       <Footer />

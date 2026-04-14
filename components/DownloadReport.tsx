@@ -1,47 +1,524 @@
 "use client";
 
 import { useState } from "react";
-import html2canvas from "html2canvas-pro";
 import jsPDF from "jspdf";
+import { PaidReport, SurveyData } from "@/lib/types";
+
+function getRiskLabel(score: number): string {
+  if (score < 20) return "Very Low Risk";
+  if (score < 40) return "Low Risk";
+  if (score < 60) return "Moderate Risk";
+  if (score < 80) return "High Risk";
+  return "Very High Risk";
+}
+
+function getRiskHex(score: number): [number, number, number] {
+  if (score < 30) return [34, 197, 94];
+  if (score < 60) return [234, 179, 8];
+  return [239, 68, 68];
+}
 
 export default function DownloadReport({
-  reportRef,
-  jobTitle,
+  report,
+  surveyData,
 }: {
-  reportRef: React.RefObject<HTMLDivElement | null>;
-  jobTitle: string;
+  report: PaidReport;
+  surveyData: SurveyData;
 }) {
   const [generating, setGenerating] = useState(false);
 
-  async function handleDownloadPDF() {
-    if (!reportRef.current) return;
+  function handleDownloadPDF() {
     setGenerating(true);
-
     try {
-      const canvas = await html2canvas(reportRef.current, {
-        backgroundColor: "#0a0a0a",
-        scale: 2,
-        useCORS: true,
-        logging: false,
-        windowWidth: 900,
-      });
+      const doc = new jsPDF({ unit: "mm", format: "a4" });
+      const W = 210;
+      const margin = 20;
+      const contentW = W - margin * 2;
+      let y = 0;
 
-      const imgData = canvas.toDataURL("image/jpeg", 0.85);
-      const imgWidth = canvas.width;
-      const imgHeight = canvas.height;
+      const black: [number, number, number] = [24, 24, 27];
+      const darkGray: [number, number, number] = [63, 63, 70];
+      const midGray: [number, number, number] = [113, 113, 122];
+      const lightGray: [number, number, number] = [161, 161, 170];
+      const red: [number, number, number] = [220, 38, 38];
+      const white: [number, number, number] = [255, 255, 255];
 
-      // A4 dimensions in mm
-      const pdfWidth = 210;
-      const pdfHeight = (imgHeight * pdfWidth) / imgWidth;
+      // --- COVER PAGE ---
+      // Red header bar
+      doc.setFillColor(...red);
+      doc.rect(0, 0, W, 6, "F");
 
-      const pdf = new jsPDF({
-        orientation: pdfHeight > pdfWidth * 1.5 ? "portrait" : "portrait",
-        unit: "mm",
-        format: [pdfWidth, pdfHeight],
-      });
+      // Logo area
+      y = 30;
+      doc.setFontSize(9);
+      doc.setTextColor(...midGray);
+      doc.setFont("helvetica", "normal");
+      doc.text("JOBS", margin, y);
+      doc.setFontSize(14);
+      doc.setTextColor(...black);
+      doc.setFont("helvetica", "bold");
+      doc.text("AI WILL REPLACE.", margin, y + 6);
 
-      pdf.addImage(imgData, "JPEG", 0, 0, pdfWidth, pdfHeight);
-      pdf.save(`ai-career-report-${jobTitle.toLowerCase().replace(/\s+/g, "-")}.pdf`);
+      // Date
+      doc.setFontSize(9);
+      doc.setTextColor(...midGray);
+      doc.setFont("helvetica", "normal");
+      doc.text(`Report Generated: ${new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}`, W - margin, y, { align: "right" });
+
+      // Divider
+      y = 50;
+      doc.setDrawColor(230, 230, 230);
+      doc.setLineWidth(0.3);
+      doc.line(margin, y, W - margin, y);
+
+      // Title block
+      y = 72;
+      doc.setFontSize(28);
+      doc.setTextColor(...black);
+      doc.setFont("helvetica", "bold");
+      doc.text("AI Career Impact", margin, y);
+      y += 12;
+      doc.text("Assessment Report", margin, y);
+
+      // Subtitle
+      y += 14;
+      doc.setFontSize(12);
+      doc.setTextColor(...darkGray);
+      doc.setFont("helvetica", "normal");
+      doc.text(`Prepared for: ${surveyData.jobTitle}`, margin, y);
+      y += 7;
+      doc.text(`Industry: ${surveyData.industry}`, margin, y);
+      y += 7;
+      doc.text(`Experience: ${surveyData.yearsExperience}`, margin, y);
+
+      // Score box
+      y += 20;
+      const riskColor = getRiskHex(report.riskScore);
+      doc.setFillColor(248, 248, 248);
+      doc.roundedRect(margin, y, contentW, 50, 3, 3, "F");
+      doc.setDrawColor(230, 230, 230);
+      doc.roundedRect(margin, y, contentW, 50, 3, 3, "S");
+
+      // Score number
+      doc.setFontSize(48);
+      doc.setTextColor(...riskColor);
+      doc.setFont("helvetica", "bold");
+      doc.text(String(report.riskScore), margin + 20, y + 33);
+
+      // Score label
+      doc.setFontSize(10);
+      doc.setTextColor(...midGray);
+      doc.setFont("helvetica", "normal");
+      doc.text("/ 100", margin + 42, y + 33);
+
+      doc.setFontSize(16);
+      doc.setTextColor(...riskColor);
+      doc.setFont("helvetica", "bold");
+      doc.text(getRiskLabel(report.riskScore), margin + 65, y + 22);
+
+      doc.setFontSize(10);
+      doc.setTextColor(...darkGray);
+      doc.setFont("helvetica", "normal");
+      doc.text(`Timeline: ${report.timelineEstimate}`, margin + 65, y + 33);
+
+      // Risk bar
+      const barY = y + 42;
+      const barW = contentW - 10;
+      doc.setFillColor(229, 231, 235);
+      doc.roundedRect(margin + 5, barY, barW, 3, 1.5, 1.5, "F");
+      doc.setFillColor(...riskColor);
+      doc.roundedRect(margin + 5, barY, barW * (report.riskScore / 100), 3, 1.5, 1.5, "F");
+
+      // Confidential footer
+      y = 265;
+      doc.setDrawColor(230, 230, 230);
+      doc.line(margin, y, W - margin, y);
+      y += 6;
+      doc.setFontSize(8);
+      doc.setTextColor(...lightGray);
+      doc.text("CONFIDENTIAL — Prepared by JobsAIWillReplace.com", margin, y);
+      doc.text("Page 1", W - margin, y, { align: "right" });
+
+      // Bottom red bar
+      doc.setFillColor(...red);
+      doc.rect(0, 291, W, 6, "F");
+
+      // --- Helper functions ---
+      let pageNum = 1;
+
+      function newPage() {
+        doc.addPage();
+        pageNum++;
+        // Red header bar
+        doc.setFillColor(...red);
+        doc.rect(0, 0, W, 3, "F");
+        // Page header
+        doc.setFontSize(8);
+        doc.setTextColor(...lightGray);
+        doc.setFont("helvetica", "normal");
+        doc.text("AI Career Impact Assessment — " + surveyData.jobTitle, margin, 12);
+        doc.text("JobsAIWillReplace.com", W - margin, 12, { align: "right" });
+        doc.setDrawColor(230, 230, 230);
+        doc.line(margin, 15, W - margin, 15);
+        // Bottom bar
+        doc.setFillColor(...red);
+        doc.rect(0, 291, W, 6, "F");
+        // Footer
+        doc.setFontSize(8);
+        doc.setTextColor(...lightGray);
+        doc.text("CONFIDENTIAL", margin, 288);
+        doc.text(`Page ${pageNum}`, W - margin, 288, { align: "right" });
+        return 22;
+      }
+
+      function checkPage(needed: number): number {
+        if (y + needed > 278) {
+          y = newPage();
+        }
+        return y;
+      }
+
+      function sectionTitle(title: string) {
+        y = checkPage(16);
+        doc.setFontSize(14);
+        doc.setTextColor(...red);
+        doc.setFont("helvetica", "bold");
+        doc.text(title.toUpperCase(), margin, y);
+        y += 2;
+        doc.setDrawColor(...red);
+        doc.setLineWidth(0.5);
+        doc.line(margin, y, margin + 40, y);
+        y += 8;
+      }
+
+      function bodyText(text: string, bold = false) {
+        y = checkPage(8);
+        doc.setFontSize(10);
+        doc.setTextColor(...darkGray);
+        doc.setFont("helvetica", bold ? "bold" : "normal");
+        const lines = doc.splitTextToSize(text, contentW);
+        doc.text(lines, margin, y);
+        y += lines.length * 5;
+      }
+
+      function bulletPoint(text: string, indent = 0) {
+        y = checkPage(8);
+        const x = margin + 3 + indent;
+        doc.setFontSize(9);
+        doc.setTextColor(...darkGray);
+        doc.setFont("helvetica", "normal");
+        doc.setFillColor(...midGray);
+        doc.circle(x, y - 1, 0.8, "F");
+        const lines = doc.splitTextToSize(text, contentW - 8 - indent);
+        doc.text(lines, x + 4, y);
+        y += lines.length * 4.5 + 1;
+      }
+
+      function labelValue(label: string, value: string) {
+        y = checkPage(8);
+        doc.setFontSize(9);
+        doc.setTextColor(...midGray);
+        doc.setFont("helvetica", "bold");
+        doc.text(label + ":", margin + 3, y);
+        doc.setTextColor(...darkGray);
+        doc.setFont("helvetica", "normal");
+        const labelW = doc.getTextWidth(label + ": ");
+        const valLines = doc.splitTextToSize(value, contentW - labelW - 6);
+        doc.text(valLines, margin + 3 + labelW, y);
+        y += valLines.length * 4.5 + 1;
+      }
+
+      // --- PAGE 2: Executive Summary + Industry Outlook ---
+      y = newPage();
+
+      sectionTitle("Executive Summary");
+      bodyText(report.summary);
+      y += 6;
+
+      if (report.industryOutlook) {
+        sectionTitle("Industry Outlook");
+        bodyText(report.industryOutlook.currentState);
+        y += 3;
+        if (report.industryOutlook.keyDrivers?.length) {
+          bodyText("Key Drivers:", true);
+          for (const driver of report.industryOutlook.keyDrivers) {
+            bulletPoint(driver);
+          }
+        }
+        y += 3;
+        if (report.industryOutlook.notableCompanies?.length) {
+          labelValue("Companies Leading Change", report.industryOutlook.notableCompanies.join(", "));
+        }
+      }
+
+      // --- Timeline ---
+      if (report.timelinePhases?.length) {
+        y += 4;
+        sectionTitle("AI Impact Timeline");
+        for (const phase of report.timelinePhases) {
+          y = checkPage(18);
+          doc.setFontSize(11);
+          doc.setTextColor(...black);
+          doc.setFont("helvetica", "bold");
+          doc.text(phase.phase, margin + 3, y);
+          doc.setFontSize(9);
+          doc.setTextColor(...midGray);
+          doc.setFont("helvetica", "normal");
+          doc.text(`(${phase.timeframe}) — ${phase.impactLevel.toUpperCase()} impact`, margin + 3 + doc.getTextWidth(phase.phase + "  "), y);
+          y += 5;
+          const desc = doc.splitTextToSize(phase.description, contentW - 6);
+          doc.setTextColor(...darkGray);
+          doc.text(desc, margin + 3, y);
+          y += desc.length * 4.5 + 4;
+        }
+      }
+
+      // --- Task Analysis ---
+      if (report.taskAnalysis?.length) {
+        y += 4;
+        sectionTitle("Task-by-Task Analysis");
+        for (const task of report.taskAnalysis) {
+          y = checkPage(22);
+          // Task name + risk
+          doc.setFontSize(10);
+          doc.setTextColor(...black);
+          doc.setFont("helvetica", "bold");
+          doc.text(task.task, margin + 3, y);
+          const taskRiskColor = getRiskHex(task.automationRisk);
+          doc.setTextColor(...taskRiskColor);
+          doc.text(`${task.automationRisk}% risk`, W - margin, y, { align: "right" });
+          y += 2;
+          // Mini bar
+          doc.setFillColor(229, 231, 235);
+          doc.roundedRect(margin + 3, y, contentW - 6, 2, 1, 1, "F");
+          doc.setFillColor(...taskRiskColor);
+          doc.roundedRect(margin + 3, y, (contentW - 6) * (task.automationRisk / 100), 2, 1, 1, "F");
+          y += 5;
+          // Explanation
+          doc.setFontSize(9);
+          doc.setTextColor(...darkGray);
+          doc.setFont("helvetica", "normal");
+          const expLines = doc.splitTextToSize(task.explanation, contentW - 6);
+          doc.text(expLines, margin + 3, y);
+          y += expLines.length * 4.5;
+          if (task.toolsAvailable?.length) {
+            labelValue("Tools", task.toolsAvailable.join(", "));
+          }
+          y += 3;
+        }
+      }
+
+      // --- Salary Impact ---
+      if (report.salaryImpact) {
+        y += 4;
+        sectionTitle("Salary & Career Impact");
+        bodyText(report.salaryImpact.currentOutlook);
+        y += 2;
+        bodyText(report.salaryImpact.projectedChange);
+        y += 3;
+        if (report.salaryImpact.highValueSkills?.length) {
+          bodyText("High-Value Skills to Develop:", true);
+          for (const skill of report.salaryImpact.highValueSkills) {
+            bulletPoint(skill);
+          }
+        }
+        if (report.salaryImpact.emergingRoles?.length) {
+          y += 2;
+          bodyText("Emerging Roles in Your Field:", true);
+          for (const role of report.salaryImpact.emergingRoles) {
+            bulletPoint(role);
+          }
+        }
+      }
+
+      // --- Automation Playbook ---
+      if (report.automationPlaybook?.length) {
+        y += 4;
+        sectionTitle("Automation Playbook");
+        for (const item of report.automationPlaybook) {
+          y = checkPage(16);
+          doc.setFontSize(10);
+          doc.setTextColor(...black);
+          doc.setFont("helvetica", "bold");
+          doc.text(item.task, margin + 3, y);
+          doc.setFontSize(8);
+          doc.setTextColor(...midGray);
+          doc.setFont("helvetica", "normal");
+          doc.text(`${item.difficulty.toUpperCase()} | Save ${item.timeSaved}`, W - margin, y, { align: "right" });
+          y += 5;
+          doc.setFontSize(9);
+          doc.setTextColor(...darkGray);
+          const howLines = doc.splitTextToSize(item.howToAutomate, contentW - 6);
+          doc.text(howLines, margin + 3, y);
+          y += howLines.length * 4.5 + 4;
+        }
+      }
+
+      // --- Learning Roadmap ---
+      if (report.learningRoadmap?.length) {
+        y += 4;
+        sectionTitle("Learning Roadmap");
+        for (let i = 0; i < report.learningRoadmap.length; i++) {
+          const item = report.learningRoadmap[i];
+          y = checkPage(18);
+          doc.setFontSize(10);
+          doc.setTextColor(...black);
+          doc.setFont("helvetica", "bold");
+          doc.text(`${i + 1}. ${item.title}`, margin + 3, y);
+          doc.setFontSize(8);
+          doc.setTextColor(...midGray);
+          doc.text(`${(item.priority || "medium").toUpperCase()} | ${item.timeframe}`, W - margin, y, { align: "right" });
+          y += 5;
+          doc.setFontSize(9);
+          doc.setTextColor(...darkGray);
+          doc.setFont("helvetica", "normal");
+          const descLines = doc.splitTextToSize(item.description, contentW - 6);
+          doc.text(descLines, margin + 3, y);
+          y += descLines.length * 4.5;
+          if (item.resources?.length) {
+            for (const res of item.resources) {
+              bulletPoint(res, 4);
+            }
+          }
+          y += 3;
+        }
+      }
+
+      // --- AI Tools (with URLs!) ---
+      if (report.aiTools?.length) {
+        y += 4;
+        sectionTitle("Recommended AI Tools");
+        for (const tool of report.aiTools) {
+          y = checkPage(16);
+          doc.setFontSize(10);
+          doc.setTextColor(...black);
+          doc.setFont("helvetica", "bold");
+          doc.text(tool.name, margin + 3, y);
+          if (tool.pricing) {
+            doc.setFontSize(8);
+            doc.setTextColor(...midGray);
+            doc.setFont("helvetica", "normal");
+            doc.text(tool.pricing, W - margin, y, { align: "right" });
+          }
+          y += 5;
+          doc.setFontSize(9);
+          doc.setTextColor(...darkGray);
+          doc.setFont("helvetica", "normal");
+          const descLines = doc.splitTextToSize(tool.description, contentW - 6);
+          doc.text(descLines, margin + 3, y);
+          y += descLines.length * 4.5;
+          if (tool.url) {
+            doc.setTextColor(...red);
+            doc.textWithLink(tool.url, margin + 3, y, { url: tool.url });
+            y += 5;
+          }
+          y += 2;
+        }
+      }
+
+      // --- Video Resources (with URLs!) ---
+      if (report.videoResources?.length) {
+        y += 4;
+        sectionTitle("Recommended Courses & Videos");
+        for (const video of report.videoResources) {
+          y = checkPage(14);
+          doc.setFontSize(10);
+          doc.setTextColor(...black);
+          doc.setFont("helvetica", "bold");
+          doc.text(video.title, margin + 3, y);
+          if (video.platform || video.duration) {
+            doc.setFontSize(8);
+            doc.setTextColor(...midGray);
+            doc.setFont("helvetica", "normal");
+            doc.text([video.platform, video.duration].filter(Boolean).join(" | "), W - margin, y, { align: "right" });
+          }
+          y += 5;
+          doc.setFontSize(9);
+          doc.setTextColor(...darkGray);
+          doc.setFont("helvetica", "normal");
+          const descLines = doc.splitTextToSize(video.description, contentW - 6);
+          doc.text(descLines, margin + 3, y);
+          y += descLines.length * 4.5;
+          if (video.url) {
+            doc.setTextColor(...red);
+            doc.textWithLink(video.url, margin + 3, y, { url: video.url });
+            y += 5;
+          }
+          y += 2;
+        }
+      }
+
+      // --- Future-Proofing Strategies ---
+      if (report.futureProofStrategies?.length) {
+        y += 4;
+        sectionTitle("Career Future-Proofing Strategies");
+        for (let i = 0; i < report.futureProofStrategies.length; i++) {
+          const item = report.futureProofStrategies[i];
+          const strategy = typeof item === "string" ? { strategy: item, explanation: "", actionSteps: [] } : item;
+          y = checkPage(16);
+          doc.setFontSize(10);
+          doc.setTextColor(...black);
+          doc.setFont("helvetica", "bold");
+          doc.text(`${i + 1}. ${strategy.strategy}`, margin + 3, y);
+          y += 5;
+          if (strategy.explanation) {
+            doc.setFontSize(9);
+            doc.setTextColor(...darkGray);
+            doc.setFont("helvetica", "normal");
+            const expLines = doc.splitTextToSize(strategy.explanation, contentW - 6);
+            doc.text(expLines, margin + 3, y);
+            y += expLines.length * 4.5;
+          }
+          if (strategy.actionSteps?.length) {
+            for (const step of strategy.actionSteps) {
+              bulletPoint(step, 4);
+            }
+          }
+          y += 3;
+        }
+      }
+
+      // --- Immediate Actions ---
+      if (report.immediateActions?.length) {
+        y += 4;
+        sectionTitle("Immediate Actions");
+        for (const item of report.immediateActions) {
+          y = checkPage(12);
+          doc.setFontSize(10);
+          doc.setTextColor(...black);
+          doc.setFont("helvetica", "bold");
+          doc.text(item.action, margin + 3, y);
+          doc.setFontSize(8);
+          doc.setTextColor(...midGray);
+          doc.text(item.timeToComplete, W - margin, y, { align: "right" });
+          y += 5;
+          doc.setFontSize(9);
+          doc.setTextColor(...darkGray);
+          doc.setFont("helvetica", "normal");
+          const whyLines = doc.splitTextToSize(item.why, contentW - 6);
+          doc.text(whyLines, margin + 3, y);
+          y += whyLines.length * 4.5 + 3;
+        }
+      }
+
+      // --- Disclaimer page ---
+      y = checkPage(30);
+      y += 10;
+      doc.setDrawColor(230, 230, 230);
+      doc.line(margin, y, W - margin, y);
+      y += 8;
+      doc.setFontSize(8);
+      doc.setTextColor(...lightGray);
+      doc.setFont("helvetica", "italic");
+      const disclaimer = "This report was generated by AI based on self-reported survey data and publicly available information about industry trends. It is intended for informational purposes only and should not be considered professional career advice. Individual circumstances vary and actual outcomes may differ from projections. For personalized career guidance, please consult a qualified career counselor.";
+      const discLines = doc.splitTextToSize(disclaimer, contentW);
+      doc.text(discLines, margin, y);
+      y += discLines.length * 3.5 + 6;
+      doc.setFont("helvetica", "normal");
+      doc.setTextColor(...midGray);
+      doc.text("jobsaiwillreplace.com", W / 2, y, { align: "center" });
+
+      doc.save(`AI-Career-Report-${surveyData.jobTitle.replace(/\s+/g, "-")}.pdf`);
     } catch (err) {
       console.error("PDF generation error:", err);
       alert("Failed to generate PDF. Please try again.");
