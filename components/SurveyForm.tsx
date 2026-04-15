@@ -219,7 +219,8 @@ const EDUCATION_LEVELS = [
 
 export default function SurveyForm() {
   const router = useRouter();
-  const [step, setStep] = useState(0);
+  // step -1 = choose method, 0-6 = survey questions, 7 = email, 8 = resume (optional at end)
+  const [step, setStep] = useState(-1);
   const [loading, setLoading] = useState(false);
   const [generationError, setGenerationError] = useState(false);
   const [data, setData] = useState<SurveyData>({
@@ -239,11 +240,14 @@ export default function SurveyForm() {
   const [resumeFile, setResumeFile] = useState<File | null>(null);
   const [resumeText, setResumeText] = useState<string>("");
   const [resumeUploading, setResumeUploading] = useState(false);
+  const [resumeAnalyzing, setResumeAnalyzing] = useState(false);
   const [resumeError, setResumeError] = useState<string>("");
+  const [autoFilled, setAutoFilled] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const upfrontFileInputRef = useRef<HTMLInputElement>(null);
 
-  const totalSteps = 9; // 7 questions + email + resume
-  const progress = ((step + 1) / totalSteps) * 100;
+  const totalSteps = 9; // method choice + 7 questions + email
+  const progress = step <= -1 ? 0 : ((step + 1) / totalSteps) * 100;
 
   function update(field: keyof SurveyData, value: unknown) {
     setData((prev) => ({ ...prev, [field]: value }));
@@ -258,27 +262,80 @@ export default function SurveyForm() {
     }));
   }
 
+  // Parse the resume file to get raw text
+  async function parseResumeFile(file: File): Promise<string> {
+    const formData = new FormData();
+    formData.append("resume", file);
+
+    const res = await fetch("/api/parse-resume", {
+      method: "POST",
+      body: formData,
+    });
+
+    const result = await res.json();
+    if (!res.ok) {
+      throw new Error(result.error || "Failed to parse resume");
+    }
+    return result.text;
+  }
+
+  // Analyze resume text with AI to extract survey answers
+  async function analyzeResumeWithAI(text: string): Promise<SurveyData> {
+    const res = await fetch("/api/analyze-resume", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ resumeText: text }),
+    });
+
+    const result = await res.json();
+    if (!res.ok) {
+      throw new Error(result.error || "Failed to analyze resume");
+    }
+    return result.surveyData;
+  }
+
+  // Upfront resume upload: parse + analyze + auto-fill + skip to email
+  async function handleUpfrontResumeUpload(file: File) {
+    setResumeFile(file);
+    setResumeUploading(true);
+    setResumeAnalyzing(false);
+    setResumeError("");
+
+    try {
+      // Step 1: Parse the file
+      const text = await parseResumeFile(file);
+      setResumeText(text);
+      setResumeUploading(false);
+
+      // Step 2: Analyze with AI
+      setResumeAnalyzing(true);
+      const surveyData = await analyzeResumeWithAI(text);
+
+      // Step 3: Auto-fill all fields
+      setData(surveyData);
+      setAutoFilled(true);
+      setResumeAnalyzing(false);
+
+      // Skip to review step (show pre-filled summary before email)
+      setStep(7);
+    } catch (err) {
+      setResumeError(err instanceof Error ? err.message : "Failed to process resume");
+      setResumeFile(null);
+      setResumeText("");
+      setResumeUploading(false);
+      setResumeAnalyzing(false);
+    }
+  }
+
+  // End-of-survey resume upload (just parses, doesn't analyze)
   async function handleResumeUpload(file: File) {
     setResumeFile(file);
     setResumeUploading(true);
     setResumeError("");
 
     try {
-      const formData = new FormData();
-      formData.append("resume", file);
-
-      const res = await fetch("/api/parse-resume", {
-        method: "POST",
-        body: formData,
-      });
-
-      const result = await res.json();
-
-      if (!res.ok) {
-        throw new Error(result.error || "Failed to parse resume");
-      }
-
-      setResumeText(result.text);
+      const text = await parseResumeFile(file);
+      setResumeText(text);
     } catch (err) {
       setResumeError(err instanceof Error ? err.message : "Failed to parse resume");
       setResumeFile(null);
@@ -292,13 +349,14 @@ export default function SurveyForm() {
     setResumeFile(null);
     setResumeText("");
     setResumeError("");
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
+    if (fileInputRef.current) fileInputRef.current.value = "";
+    if (upfrontFileInputRef.current) upfrontFileInputRef.current.value = "";
   }
 
   function canProceed(): boolean {
     switch (step) {
+      case -1:
+        return true;
       case 0:
         return data.jobTitle.trim().length > 0;
       case 1:
@@ -314,9 +372,9 @@ export default function SurveyForm() {
       case 6:
         return data.educationLevel.length > 0;
       case 7:
-        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email); // Valid email
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
       case 8:
-        return !resumeUploading; // Always can proceed (resume is optional)
+        return !resumeUploading;
       default:
         return false;
     }
@@ -325,7 +383,7 @@ export default function SurveyForm() {
   async function handleSubmit() {
     setLoading(true);
     try {
-      // Save to database first (non-blocking — don't fail if DB is down)
+      // Save to database (non-blocking)
       fetch("/api/save-submission", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -334,7 +392,7 @@ export default function SurveyForm() {
           surveyData: data,
           resumeText: resumeText || null,
         }),
-      }).catch(() => {}); // Fire and forget
+      }).catch(() => {});
 
       // Generate report
       const res = await fetch("/api/generate-report", {
@@ -375,7 +433,13 @@ export default function SurveyForm() {
   }
 
   function next() {
-    if (step < totalSteps - 1) {
+    if (step === 7 && !autoFilled) {
+      // After email, go to optional resume upload step
+      setStep(8);
+    } else if (step === 7 && autoFilled) {
+      // If auto-filled from resume, skip the end resume step and submit
+      handleSubmit();
+    } else if (step < 8) {
       setStep(step + 1);
     } else {
       handleSubmit();
@@ -409,31 +473,140 @@ export default function SurveyForm() {
     );
   }
 
-  // Loading state with animated tips
+  // Loading state
   if (loading) {
     return <LoadingScreen jobTitle={data.jobTitle} />;
   }
 
   return (
     <div className="w-full max-w-2xl mx-auto">
-      {/* Progress bar */}
-      <div className="mb-8">
-        <div className="flex justify-between text-sm text-gray-400 mb-2">
-          <span>
-            {step < 7 ? `Question ${step + 1} of 7` : step === 7 ? "Almost there!" : "Bonus: Resume Upload"}
-          </span>
-          <span>{Math.round(progress)}% complete</span>
+      {/* Progress bar — hide on method choice step */}
+      {step >= 0 && (
+        <div className="mb-8">
+          <div className="flex justify-between text-sm text-gray-400 mb-2">
+            <span>
+              {step < 7
+                ? `Question ${step + 1} of 7`
+                : step === 7
+                ? "Almost there!"
+                : "Bonus: Resume Upload"}
+            </span>
+            <span>{Math.round(progress)}% complete</span>
+          </div>
+          <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+            <div
+              className="h-full bg-gray-900 rounded-full transition-all duration-500"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
         </div>
-        <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-          <div
-            className="h-full bg-gray-900 rounded-full transition-all duration-500"
-            style={{ width: `${progress}%` }}
-          />
-        </div>
-      </div>
+      )}
 
       {/* Steps */}
       <div className="animate-fade-in" key={step}>
+
+        {/* Step -1: Choose method */}
+        {step === -1 && (
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+              How would you like to get started?
+            </h2>
+            <p className="text-gray-500 mb-8">
+              Upload your resume for instant AI-powered analysis, or answer a few quick questions manually.
+            </p>
+
+            <div className="grid gap-4">
+              {/* Upload Resume Option */}
+              <label
+                className={`relative flex flex-col items-center p-8 rounded-xl border-2 border-dashed transition-all cursor-pointer ${
+                  resumeUploading || resumeAnalyzing
+                    ? "border-gray-300 bg-gray-50"
+                    : "border-gray-300 hover:border-gray-400 hover:bg-gray-50"
+                }`}
+                onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); }}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  const file = e.dataTransfer.files[0];
+                  if (file) handleUpfrontResumeUpload(file);
+                }}
+              >
+                <input
+                  ref={upfrontFileInputRef}
+                  type="file"
+                  accept=".pdf,.txt"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) handleUpfrontResumeUpload(file);
+                  }}
+                />
+
+                {resumeUploading || resumeAnalyzing ? (
+                  <div className="flex flex-col items-center gap-3">
+                    <svg className="animate-spin w-10 h-10 text-gray-400" viewBox="0 0 24 24" fill="none">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                    </svg>
+                    <span className="text-gray-600 font-medium">
+                      {resumeUploading ? "Parsing your resume..." : "AI is analyzing your experience..."}
+                    </span>
+                    <span className="text-gray-400 text-sm">
+                      {resumeUploading ? "Extracting text from your file" : "Identifying your role, skills, and industry"}
+                    </span>
+                  </div>
+                ) : (
+                  <>
+                    <svg className="w-10 h-10 text-gray-400 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                    </svg>
+                    <span className="text-gray-900 font-semibold text-lg">Upload Your Resume</span>
+                    <span className="text-gray-500 text-sm mt-1">
+                      Drop your file here or <span className="text-gray-900 underline">browse</span>
+                    </span>
+                    <span className="text-gray-400 text-xs mt-2">PDF or TXT (max 5MB)</span>
+                    <div className="mt-4 px-4 py-2 bg-gray-100 rounded-lg">
+                      <span className="text-gray-500 text-xs">AI will auto-fill all questions from your resume — takes about 10 seconds</span>
+                    </div>
+                  </>
+                )}
+              </label>
+
+              {resumeError && (
+                <div className="p-3 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm">
+                  {resumeError}. You can try again or answer manually below.
+                </div>
+              )}
+
+              {/* Divider */}
+              <div className="flex items-center gap-4 my-2">
+                <div className="flex-1 h-px bg-gray-200" />
+                <span className="text-gray-400 text-sm">or</span>
+                <div className="flex-1 h-px bg-gray-200" />
+              </div>
+
+              {/* Manual Option */}
+              <button
+                onClick={() => setStep(0)}
+                className="flex items-center gap-4 p-6 rounded-xl border border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition-all text-left"
+              >
+                <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center shrink-0">
+                  <svg className="w-5 h-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                  </svg>
+                </div>
+                <div>
+                  <span className="text-gray-900 font-semibold">Answer 7 Questions</span>
+                  <p className="text-gray-500 text-sm mt-0.5">Takes about 2 minutes — no resume needed</p>
+                </div>
+                <svg className="w-5 h-5 text-gray-400 ml-auto shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        )}
+
         {step === 0 && (
           <div>
             <h2 className="text-2xl font-bold text-gray-900 mb-2">
@@ -642,6 +815,49 @@ export default function SurveyForm() {
 
         {step === 7 && (
           <div>
+            {/* If auto-filled, show a summary of what was detected */}
+            {autoFilled && (
+              <div className="mb-8 p-5 rounded-xl bg-gray-50 border border-gray-200">
+                <div className="flex items-center gap-2 mb-3">
+                  <svg className="w-5 h-5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span className="text-gray-900 font-semibold">Resume analyzed successfully</span>
+                </div>
+                <div className="grid grid-cols-2 gap-3 text-sm">
+                  <div>
+                    <span className="text-gray-400">Job Title</span>
+                    <p className="text-gray-900 font-medium">{data.jobTitle}</p>
+                  </div>
+                  <div>
+                    <span className="text-gray-400">Industry</span>
+                    <p className="text-gray-900 font-medium">{data.industry}</p>
+                  </div>
+                  <div>
+                    <span className="text-gray-400">Experience</span>
+                    <p className="text-gray-900 font-medium">{data.yearsExperience}</p>
+                  </div>
+                  <div>
+                    <span className="text-gray-400">Education</span>
+                    <p className="text-gray-900 font-medium">{data.educationLevel}</p>
+                  </div>
+                  <div className="col-span-2">
+                    <span className="text-gray-400">Primary Tasks</span>
+                    <p className="text-gray-900 font-medium">{data.primaryTasks.join(", ")}</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => {
+                    setAutoFilled(false);
+                    setStep(0);
+                  }}
+                  className="mt-3 text-sm text-gray-500 hover:text-gray-700 underline"
+                >
+                  Edit answers manually
+                </button>
+              </div>
+            )}
+
             <h2 className="text-2xl font-bold text-gray-900 mb-2">
               Where should we send your report?
             </h2>
@@ -750,60 +966,64 @@ export default function SurveyForm() {
         )}
       </div>
 
-      {/* Navigation */}
-      <div className="flex justify-between mt-10">
-        <button
-          onClick={() => setStep(Math.max(0, step - 1))}
-          className={`px-6 py-3 rounded-lg border border-gray-200 text-gray-500 hover:text-gray-900 hover:border-gray-300 transition-all ${step === 0 ? "invisible" : ""}`}
-        >
-          Back
-        </button>
-        <div className="flex gap-3">
-          {step === 8 && !resumeFile && (
-            <button
-              onClick={handleSubmit}
-              disabled={loading}
-              className="px-6 py-3 rounded-lg border border-gray-200 text-gray-500 hover:text-gray-900 hover:border-gray-300 transition-all"
-            >
-              Skip
-            </button>
-          )}
+      {/* Navigation — hide on method choice step */}
+      {step >= 0 && (
+        <div className="flex justify-between mt-10">
           <button
-            onClick={next}
-            disabled={!canProceed() || loading}
-            className="px-8 py-3 rounded-lg bg-gray-900 hover:bg-gray-800 text-white font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+            onClick={() => setStep(Math.max(autoFilled ? -1 : 0, step - 1))}
+            className={`px-6 py-3 rounded-lg border border-gray-200 text-gray-500 hover:text-gray-900 hover:border-gray-300 transition-all ${step === 0 && !autoFilled ? "invisible" : ""}`}
           >
-            {loading ? (
-              <>
-                <svg
-                  className="animate-spin w-5 h-5"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  />
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                  />
-                </svg>
-                Analyzing...
-              </>
-            ) : step === totalSteps - 1 ? (
-              "Generate My Report"
-            ) : (
-              "Next"
-            )}
+            Back
           </button>
+          <div className="flex gap-3">
+            {step === 8 && !resumeFile && (
+              <button
+                onClick={handleSubmit}
+                disabled={loading}
+                className="px-6 py-3 rounded-lg border border-gray-200 text-gray-500 hover:text-gray-900 hover:border-gray-300 transition-all"
+              >
+                Skip
+              </button>
+            )}
+            <button
+              onClick={next}
+              disabled={!canProceed() || loading}
+              className="px-8 py-3 rounded-lg bg-gray-900 hover:bg-gray-800 text-white font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+            >
+              {loading ? (
+                <>
+                  <svg
+                    className="animate-spin w-5 h-5"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                    />
+                  </svg>
+                  Analyzing...
+                </>
+              ) : step === 7 && autoFilled ? (
+                "Generate My Report"
+              ) : step === 8 ? (
+                "Generate My Report"
+              ) : (
+                "Next"
+              )}
+            </button>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

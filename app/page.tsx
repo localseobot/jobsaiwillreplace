@@ -13,8 +13,9 @@ export default function Home() {
             How vulnerable is your career to AI?
           </h1>
           <p className="mt-5 text-lg text-gray-500 max-w-xl mx-auto leading-relaxed">
-            Get a data-driven assessment of your role&apos;s automation risk,
-            a personalized timeline, and a clear action plan — in under 2 minutes.
+            Upload your resume or answer 7 quick questions to get a data-driven
+            assessment of your role&apos;s automation risk, a personalized timeline,
+            and a clear action plan.
           </p>
           <div className="mt-8">
             <Link
@@ -25,7 +26,7 @@ export default function Home() {
             </Link>
           </div>
           <p className="mt-3 text-gray-400 text-sm">
-            No account required. Results are instant.
+            No account required. Upload your resume or answer manually.
           </p>
         </section>
 
@@ -39,8 +40,8 @@ export default function Home() {
               {[
                 {
                   step: "1",
-                  title: "Answer 7 questions",
-                  desc: "About your job title, tasks, industry, and experience level.",
+                  title: "Upload resume or answer 7 questions",
+                  desc: "Upload your resume for instant AI analysis, or answer a short survey.",
                 },
                 {
                   step: "2",
