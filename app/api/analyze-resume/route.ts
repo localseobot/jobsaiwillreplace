@@ -50,26 +50,56 @@ const EDUCATION_LEVELS = [
   "Self-taught/Bootcamp",
 ];
 
-const PROMPT = `You are a resume analyzer. Given the resume text below, extract the information needed to fill out a career assessment survey.
+const PROMPT = `You are an expert resume analyst conducting a thorough review. Read every single line of the resume carefully — job titles, bullet points, tools listed, certifications, education, dates, and skills sections. Extract precise information for a career assessment survey.
+
+ANALYSIS INSTRUCTIONS — read the resume methodically:
+
+1. JOB TITLE: Find their MOST RECENT or CURRENT position. Use the exact title from the resume, not a generalized version. If they list "Senior Data Analyst II at Acme Corp", return "Senior Data Analyst II", not just "Data Analyst".
+
+2. INDUSTRY: Determine from the companies they've worked at, the domain language in their bullet points, and any industry-specific tools or certifications mentioned.
+
+3. YEARS OF EXPERIENCE: Calculate precisely from employment dates. Add up total professional experience across all listed positions. If they started their first role in 2018 and it's now 2025, that's ~7 years = "5-10 years". Be precise — don't guess.
+
+4. PRIMARY TASKS: Read EVERY bullet point across ALL positions. Map their actual daily responsibilities to the task categories. For example:
+   - "Built dashboards in Tableau" → Data Analysis
+   - "Wrote blog posts and social copy" → Writing & Content Creation
+   - "Managed a team of 5 engineers" → Management & Leadership
+   - "Developed REST APIs in Python" → Software Development
+   - "Handled inbound customer inquiries" → Customer Service
+   Pick 3-6 that genuinely match their work.
+
+5. REPETITIVE PERCENT: Assess based on the nature of their role. A warehouse worker doing the same picking process = 80%+. A creative director doing varied campaigns = 20-30%. A bookkeeper doing recurring monthly closes = 60-70%. Think carefully.
+
+6. AI TOOL USAGE: Search the resume carefully for ANY mention of:
+   - AI/ML tools: ChatGPT, GPT, Claude, Copilot, Midjourney, DALL-E, Stable Diffusion, Jasper, Copy.ai, Grammarly AI, Notion AI
+   - ML/AI frameworks: TensorFlow, PyTorch, scikit-learn, Hugging Face, LangChain, OpenAI API
+   - AI-adjacent tools: automated workflows with Zapier/Make, predictive analytics, NLP, computer vision
+   - Keywords: "artificial intelligence", "machine learning", "AI-powered", "prompt engineering", "automation"
+   - If ANY AI tool is explicitly mentioned → "yes"
+   - If they work in tech or data science but don't explicitly mention AI tools → "sometimes"
+   - If there's zero indication of AI tool usage and they're in a non-tech field → "no"
+
+7. EDUCATION: Look for the Education section. Find the HIGHEST degree earned:
+   - PhD, Doctorate, JD, MD → "Doctoral Degree"
+   - MBA, MS, MA, M.Eng → "Master's Degree"
+   - BS, BA, B.Eng, BFA → "Bachelor's Degree"
+   - AS, AA → "Associate Degree"
+   - Coding bootcamp, self-taught portfolio → "Self-taught/Bootcamp"
+   - Trade school, vocational certificate → "Trade/Vocational"
+   - If education section is missing, infer from career level and field
 
 Return ONLY valid JSON matching this exact structure:
 {
-  "jobTitle": "<their most recent or current job title, be specific>",
+  "jobTitle": "<their most recent/current exact job title>",
   "industry": "<one of: ${INDUSTRIES.join(", ")}>",
   "yearsExperience": "<one of: Less than 1 year, 1-3 years, 3-5 years, 5-10 years, 10-20 years, 20+ years>",
-  "primaryTasks": [<select all that apply from this list: ${TASKS.map(t => `"${t}"`).join(", ")}> — pick 3-6 that best match their resume],
-  "repetitivePercent": <number 0-100, estimate what percentage of their work is repetitive/routine based on their role>,
-  "usesAI": "<one of: yes, sometimes, no — infer from resume content, tools mentioned, etc. Default to 'sometimes' if unclear>",
+  "primaryTasks": [<select 3-6 from: ${TASKS.map(t => `"${t}"`).join(", ")}>],
+  "repetitivePercent": <number 0-100>,
+  "usesAI": "<one of: yes, sometimes, no>",
   "educationLevel": "<one of: ${EDUCATION_LEVELS.join(", ")}>"
 }
 
-RULES:
-- jobTitle must be their most recent/current position title
-- industry must be EXACTLY one of the listed options
-- yearsExperience should be estimated from work history dates
-- primaryTasks must only contain items from the provided list
-- Be as accurate as possible based on the resume content
-- If something cannot be determined, make your best educated guess`;
+CRITICAL: Every field must be evidence-based from the resume text. Do not default or guess when the information is clearly stated in the resume.`;
 
 export async function POST(req: NextRequest) {
   try {
@@ -86,10 +116,10 @@ export async function POST(req: NextRequest) {
       model: "gpt-4o",
       messages: [
         { role: "system", content: PROMPT },
-        { role: "user", content: resumeText.slice(0, 5000) },
+        { role: "user", content: `Here is the full resume text to analyze:\n\n${resumeText.slice(0, 8000)}` },
       ],
-      temperature: 0.3,
-      max_tokens: 500,
+      temperature: 0.2,
+      max_tokens: 800,
     });
 
     const content = completion.choices[0]?.message?.content;

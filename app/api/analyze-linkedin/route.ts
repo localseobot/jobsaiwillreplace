@@ -22,24 +22,43 @@ const EDUCATION_LEVELS = [
   "Master's Degree", "Doctoral Degree", "Trade/Vocational", "Self-taught/Bootcamp",
 ];
 
-const PROMPT = `You are a career profile analyzer. Given LinkedIn profile information, extract the data needed to fill out a career assessment survey.
+const PROMPT = `You are an expert career profile analyst. Given LinkedIn profile information, carefully analyze every detail to extract precise data for a career assessment survey.
+
+ANALYSIS INSTRUCTIONS:
+
+1. JOB TITLE: Extract their exact current position from the headline. LinkedIn headlines follow patterns like "Job Title at Company" or "Job Title | Company". Use the specific title, not a generalized version.
+
+2. INDUSTRY: Determine from the company they work at, their headline, and the domain language in their summary. Match to the closest option.
+
+3. YEARS OF EXPERIENCE: If dates are available, calculate precisely. If only a headline is available, infer from seniority indicators:
+   - "Junior", "Associate", entry-level language → "1-3 years"
+   - "Senior", "Lead" → "5-10 years"
+   - "Director", "VP", "Head of" → "10-20 years"
+   - "C-suite", "Founder" with established company → "10-20 years" or "20+ years"
+
+4. PRIMARY TASKS: Infer from their job title and any description available. Map to 3-6 task categories that realistically match their daily work.
+
+5. REPETITIVE PERCENT: Estimate based on role type. Creative/strategic roles = lower. Process/operations roles = higher.
+
+6. AI TOOL USAGE: Look for ANY mention of AI, ML, automation, ChatGPT, Copilot, data science, machine learning, prompt engineering, or AI-adjacent tools in their headline or summary.
+   - Explicit AI/ML mentions → "yes"
+   - Tech/data roles without explicit AI mention → "sometimes"
+   - Non-tech roles with no AI signals → "no"
+
+7. EDUCATION: Extract if mentioned in the profile data. If not available, make a reasonable inference based on their career level and industry.
 
 Return ONLY valid JSON matching this exact structure:
 {
-  "jobTitle": "<their most recent or current job title, be specific>",
+  "jobTitle": "<their exact current job title>",
   "industry": "<one of: ${INDUSTRIES.join(", ")}>",
   "yearsExperience": "<one of: Less than 1 year, 1-3 years, 3-5 years, 5-10 years, 10-20 years, 20+ years>",
-  "primaryTasks": [<select all that apply from this list: ${TASKS.map(t => `"${t}"`).join(", ")}> — pick 3-6 that best match their profile],
-  "repetitivePercent": <number 0-100, estimate based on their role>,
-  "usesAI": "<one of: yes, sometimes, no — infer from profile. Tech roles likely 'yes' or 'sometimes'>",
+  "primaryTasks": [<select 3-6 from: ${TASKS.map(t => `"${t}"`).join(", ")}>],
+  "repetitivePercent": <number 0-100>,
+  "usesAI": "<one of: yes, sometimes, no>",
   "educationLevel": "<one of: ${EDUCATION_LEVELS.join(", ")}>"
 }
 
-RULES:
-- jobTitle must be their current position
-- industry must be EXACTLY one of the listed options
-- primaryTasks must only contain items from the provided list
-- Make educated inferences based on available information`;
+Every field should be evidence-based where possible. Only infer when data isn't directly available.`;
 
 function normalizeLinkedInUrl(input: string): string | null {
   let url = input.trim();
