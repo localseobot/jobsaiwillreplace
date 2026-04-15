@@ -13,9 +13,9 @@ function getRiskLabel(score: number): string {
 }
 
 function getRiskHex(score: number): [number, number, number] {
-  if (score < 30) return [34, 197, 94];
-  if (score < 60) return [234, 179, 8];
-  return [239, 68, 68];
+  if (score < 30) return [22, 163, 74];
+  if (score < 60) return [202, 138, 4];
+  return [220, 38, 38];
 }
 
 export default function DownloadReport({
@@ -36,28 +36,24 @@ export default function DownloadReport({
       const contentW = W - margin * 2;
       let y = 0;
 
-      const black: [number, number, number] = [24, 24, 27];
-      const darkGray: [number, number, number] = [63, 63, 70];
-      const midGray: [number, number, number] = [113, 113, 122];
-      const lightGray: [number, number, number] = [161, 161, 170];
-      const red: [number, number, number] = [220, 38, 38];
+      const black: [number, number, number] = [26, 26, 26];
+      const darkGray: [number, number, number] = [75, 85, 99];
+      const midGray: [number, number, number] = [107, 114, 128];
+      const lightGray: [number, number, number] = [156, 163, 175];
+      const accent: [number, number, number] = [26, 26, 26];
       const white: [number, number, number] = [255, 255, 255];
 
       // --- COVER PAGE ---
-      // Red header bar
-      doc.setFillColor(...red);
-      doc.rect(0, 0, W, 6, "F");
+      // Thin accent bar
+      doc.setFillColor(...accent);
+      doc.rect(0, 0, W, 4, "F");
 
       // Logo area
       y = 30;
-      doc.setFontSize(9);
-      doc.setTextColor(...midGray);
-      doc.setFont("helvetica", "normal");
-      doc.text("JOBS", margin, y);
       doc.setFontSize(14);
       doc.setTextColor(...black);
       doc.setFont("helvetica", "bold");
-      doc.text("AI WILL REPLACE.", margin, y + 6);
+      doc.text("JobsAIWillReplace.", margin, y);
 
       // Date
       doc.setFontSize(9);
@@ -66,13 +62,13 @@ export default function DownloadReport({
       doc.text(`Report Generated: ${new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}`, W - margin, y, { align: "right" });
 
       // Divider
-      y = 50;
-      doc.setDrawColor(230, 230, 230);
+      y = 44;
+      doc.setDrawColor(229, 231, 235);
       doc.setLineWidth(0.3);
       doc.line(margin, y, W - margin, y);
 
       // Title block
-      y = 72;
+      y = 66;
       doc.setFontSize(28);
       doc.setTextColor(...black);
       doc.setFont("helvetica", "bold");
@@ -94,9 +90,9 @@ export default function DownloadReport({
       // Score box
       y += 20;
       const riskColor = getRiskHex(report.riskScore);
-      doc.setFillColor(248, 248, 248);
+      doc.setFillColor(249, 250, 251);
       doc.roundedRect(margin, y, contentW, 50, 3, 3, "F");
-      doc.setDrawColor(230, 230, 230);
+      doc.setDrawColor(229, 231, 235);
       doc.roundedRect(margin, y, contentW, 50, 3, 3, "S");
 
       // Score number
@@ -131,7 +127,7 @@ export default function DownloadReport({
 
       // Confidential footer
       y = 265;
-      doc.setDrawColor(230, 230, 230);
+      doc.setDrawColor(229, 231, 235);
       doc.line(margin, y, W - margin, y);
       y += 6;
       doc.setFontSize(8);
@@ -139,9 +135,9 @@ export default function DownloadReport({
       doc.text("CONFIDENTIAL — Prepared by JobsAIWillReplace.com", margin, y);
       doc.text("Page 1", W - margin, y, { align: "right" });
 
-      // Bottom red bar
-      doc.setFillColor(...red);
-      doc.rect(0, 291, W, 6, "F");
+      // Bottom accent bar
+      doc.setFillColor(...accent);
+      doc.rect(0, 293, W, 4, "F");
 
       // --- Helper functions ---
       let pageNum = 1;
@@ -149,30 +145,26 @@ export default function DownloadReport({
       function newPage() {
         doc.addPage();
         pageNum++;
-        // Red header bar
-        doc.setFillColor(...red);
-        doc.rect(0, 0, W, 3, "F");
-        // Page header
+        doc.setFillColor(...accent);
+        doc.rect(0, 0, W, 2, "F");
         doc.setFontSize(8);
         doc.setTextColor(...lightGray);
         doc.setFont("helvetica", "normal");
         doc.text("AI Career Impact Assessment — " + surveyData.jobTitle, margin, 12);
         doc.text("JobsAIWillReplace.com", W - margin, 12, { align: "right" });
-        doc.setDrawColor(230, 230, 230);
+        doc.setDrawColor(229, 231, 235);
         doc.line(margin, 15, W - margin, 15);
-        // Bottom bar
-        doc.setFillColor(...red);
-        doc.rect(0, 291, W, 6, "F");
-        // Footer
+        doc.setFillColor(...accent);
+        doc.rect(0, 293, W, 4, "F");
         doc.setFontSize(8);
         doc.setTextColor(...lightGray);
-        doc.text("CONFIDENTIAL", margin, 288);
-        doc.text(`Page ${pageNum}`, W - margin, 288, { align: "right" });
+        doc.text("CONFIDENTIAL", margin, 290);
+        doc.text(`Page ${pageNum}`, W - margin, 290, { align: "right" });
         return 22;
       }
 
       function checkPage(needed: number): number {
-        if (y + needed > 278) {
+        if (y + needed > 280) {
           y = newPage();
         }
         return y;
@@ -181,11 +173,11 @@ export default function DownloadReport({
       function sectionTitle(title: string) {
         y = checkPage(16);
         doc.setFontSize(14);
-        doc.setTextColor(...red);
+        doc.setTextColor(...black);
         doc.setFont("helvetica", "bold");
         doc.text(title.toUpperCase(), margin, y);
         y += 2;
-        doc.setDrawColor(...red);
+        doc.setDrawColor(...accent);
         doc.setLineWidth(0.5);
         doc.line(margin, y, margin + 40, y);
         y += 8;
@@ -279,7 +271,6 @@ export default function DownloadReport({
         sectionTitle("Task-by-Task Analysis");
         for (const task of report.taskAnalysis) {
           y = checkPage(22);
-          // Task name + risk
           doc.setFontSize(10);
           doc.setTextColor(...black);
           doc.setFont("helvetica", "bold");
@@ -288,13 +279,11 @@ export default function DownloadReport({
           doc.setTextColor(...taskRiskColor);
           doc.text(`${task.automationRisk}% risk`, W - margin, y, { align: "right" });
           y += 2;
-          // Mini bar
           doc.setFillColor(229, 231, 235);
           doc.roundedRect(margin + 3, y, contentW - 6, 2, 1, 1, "F");
           doc.setFillColor(...taskRiskColor);
           doc.roundedRect(margin + 3, y, (contentW - 6) * (task.automationRisk / 100), 2, 1, 1, "F");
           y += 5;
-          // Explanation
           doc.setFontSize(9);
           doc.setTextColor(...darkGray);
           doc.setFont("helvetica", "normal");
@@ -384,7 +373,7 @@ export default function DownloadReport({
         }
       }
 
-      // --- AI Tools (with URLs!) ---
+      // --- AI Tools ---
       if (report.aiTools?.length) {
         y += 4;
         sectionTitle("Recommended AI Tools");
@@ -408,7 +397,7 @@ export default function DownloadReport({
           doc.text(descLines, margin + 3, y);
           y += descLines.length * 4.5;
           if (tool.url) {
-            doc.setTextColor(...red);
+            doc.setTextColor(...accent);
             doc.textWithLink(tool.url, margin + 3, y, { url: tool.url });
             y += 5;
           }
@@ -416,7 +405,7 @@ export default function DownloadReport({
         }
       }
 
-      // --- Video Resources (with URLs!) ---
+      // --- Video Resources ---
       if (report.videoResources?.length) {
         y += 4;
         sectionTitle("Recommended Courses & Videos");
@@ -440,7 +429,7 @@ export default function DownloadReport({
           doc.text(descLines, margin + 3, y);
           y += descLines.length * 4.5;
           if (video.url) {
-            doc.setTextColor(...red);
+            doc.setTextColor(...accent);
             doc.textWithLink(video.url, margin + 3, y, { url: video.url });
             y += 5;
           }
@@ -501,10 +490,10 @@ export default function DownloadReport({
         }
       }
 
-      // --- Disclaimer page ---
+      // --- Disclaimer ---
       y = checkPage(30);
       y += 10;
-      doc.setDrawColor(230, 230, 230);
+      doc.setDrawColor(229, 231, 235);
       doc.line(margin, y, W - margin, y);
       y += 8;
       doc.setFontSize(8);
@@ -531,7 +520,7 @@ export default function DownloadReport({
     <button
       onClick={handleDownloadPDF}
       disabled={generating}
-      className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-red-600 hover:bg-red-700 text-white font-medium transition-all disabled:opacity-50"
+      className="flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-gray-900 hover:bg-gray-800 text-white font-medium transition-colors disabled:opacity-50"
     >
       {generating ? (
         <>

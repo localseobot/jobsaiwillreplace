@@ -47,14 +47,14 @@ function CheckoutForm({ onSuccess }: { onSuccess: () => void }) {
         }}
       />
       {error && (
-        <div className="mt-4 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
+        <div className="mt-4 p-3 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm">
           {error}
         </div>
       )}
       <button
         type="submit"
         disabled={!stripe || loading}
-        className="mt-6 w-full py-3 rounded-xl bg-red-600 hover:bg-red-700 text-white font-medium transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+        className="mt-6 w-full py-3 rounded-lg bg-gray-900 hover:bg-gray-800 text-white font-medium transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
       >
         {loading ? (
           <>
@@ -101,7 +101,7 @@ export default function PaymentForm({ onSuccess }: { onSuccess: () => void }) {
     return (
       <div className="flex items-center justify-center py-8">
         <svg
-          className="animate-spin w-8 h-8 text-red-500"
+          className="animate-spin w-8 h-8 text-gray-400"
           viewBox="0 0 24 24"
           fill="none"
         >
@@ -129,12 +129,12 @@ export default function PaymentForm({ onSuccess }: { onSuccess: () => void }) {
       options={{
         clientSecret,
         appearance: {
-          theme: "night",
+          theme: "stripe",
           variables: {
-            colorPrimary: "#ef4444",
-            colorBackground: "#1a1a1a",
-            colorText: "#ededed",
-            borderRadius: "12px",
+            colorPrimary: "#1a1a1a",
+            colorBackground: "#ffffff",
+            colorText: "#1a1a1a",
+            borderRadius: "8px",
           },
         },
       }}

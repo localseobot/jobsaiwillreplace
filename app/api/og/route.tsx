@@ -18,21 +18,21 @@ export async function GET(req: NextRequest) {
           height: "630px",
           display: "flex",
           flexDirection: "column",
-          background: "linear-gradient(135deg, #0a0a0a 0%, #1a0505 50%, #0a0a0a 100%)",
+          background: "#ffffff",
           fontFamily: "system-ui, sans-serif",
           position: "relative",
           overflow: "hidden",
         }}
       >
-        {/* Red accent bar */}
+        {/* Accent bar */}
         <div
           style={{
             position: "absolute",
             top: 0,
             left: 0,
             right: 0,
-            height: "6px",
-            background: "linear-gradient(90deg, #dc2626, #f97316)",
+            height: "4px",
+            background: "#1a1a1a",
             display: "flex",
           }}
         />
@@ -47,42 +47,29 @@ export async function GET(req: NextRequest) {
             padding: "60px",
           }}
         >
-          {/* Logo area */}
+          {/* Logo */}
           <div
             style={{
               display: "flex",
               alignItems: "center",
-              gap: "12px",
+              gap: "4px",
               marginBottom: hasScore ? "30px" : "40px",
             }}
           >
             <div
               style={{
-                fontSize: "14px",
-                fontWeight: 500,
-                letterSpacing: "0.15em",
-                color: "#71717a",
-                textTransform: "uppercase",
-                display: "flex",
-              }}
-            >
-              JOBS
-            </div>
-            <div
-              style={{
                 fontSize: "28px",
                 fontWeight: 800,
-                color: "#ffffff",
+                color: "#1a1a1a",
                 display: "flex",
               }}
             >
-              AI WILL REPLACE
-              <span style={{ color: "#ef4444" }}>.</span>
+              JobsAIWillReplace
+              <span style={{ color: "#dc2626" }}>.</span>
             </div>
           </div>
 
           {hasScore ? (
-            // Personalized OG for shared reports
             <div
               style={{
                 display: "flex",
@@ -93,7 +80,7 @@ export async function GET(req: NextRequest) {
               <div
                 style={{
                   fontSize: "20px",
-                  color: "#a1a1aa",
+                  color: "#6b7280",
                   marginBottom: "16px",
                   display: "flex",
                 }}
@@ -106,10 +93,10 @@ export async function GET(req: NextRequest) {
                   fontWeight: 800,
                   color:
                     Number(score) < 30
-                      ? "#4ade80"
+                      ? "#16a34a"
                       : Number(score) < 60
-                      ? "#facc15"
-                      : "#f87171",
+                      ? "#ca8a04"
+                      : "#dc2626",
                   lineHeight: 1,
                   display: "flex",
                 }}
@@ -119,7 +106,7 @@ export async function GET(req: NextRequest) {
               <div
                 style={{
                   fontSize: "24px",
-                  color: "#71717a",
+                  color: "#9ca3af",
                   marginTop: "8px",
                   display: "flex",
                 }}
@@ -128,7 +115,6 @@ export async function GET(req: NextRequest) {
               </div>
             </div>
           ) : (
-            // Default OG
             <div
               style={{
                 display: "flex",
@@ -140,7 +126,7 @@ export async function GET(req: NextRequest) {
                 style={{
                   fontSize: "56px",
                   fontWeight: 800,
-                  color: "#ffffff",
+                  color: "#1a1a1a",
                   textAlign: "center",
                   lineHeight: 1.1,
                   display: "flex",
@@ -151,7 +137,7 @@ export async function GET(req: NextRequest) {
               <div
                 style={{
                   fontSize: "22px",
-                  color: "#a1a1aa",
+                  color: "#6b7280",
                   textAlign: "center",
                   marginTop: "20px",
                   maxWidth: "700px",
@@ -171,7 +157,7 @@ export async function GET(req: NextRequest) {
             justifyContent: "center",
             paddingBottom: "30px",
             fontSize: "16px",
-            color: "#52525b",
+            color: "#9ca3af",
           }}
         >
           jobsaiwillreplace.com

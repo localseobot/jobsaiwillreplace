@@ -37,7 +37,7 @@ export default function SharedReportPage() {
       <>
         <Header />
         <main className="flex-1 flex items-center justify-center">
-          <svg className="animate-spin w-10 h-10 text-red-500" viewBox="0 0 24 24" fill="none">
+          <svg className="animate-spin w-10 h-10 text-gray-400" viewBox="0 0 24 24" fill="none">
             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
           </svg>
@@ -53,11 +53,11 @@ export default function SharedReportPage() {
         <Header />
         <main className="flex-1 flex items-center justify-center px-4">
           <div className="text-center">
-            <h1 className="text-3xl font-bold text-white mb-4">Report Not Found</h1>
-            <p className="text-zinc-400 mb-8">This report link may have expired or doesn&apos;t exist.</p>
+            <h1 className="text-3xl font-bold text-gray-900 mb-4">Report Not Found</h1>
+            <p className="text-gray-500 mb-8">This report link may have expired or doesn&apos;t exist.</p>
             <Link
               href="/survey"
-              className="inline-flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white font-semibold px-6 py-3 rounded-xl transition-all"
+              className="inline-flex items-center gap-2 bg-gray-900 hover:bg-gray-800 text-white font-medium px-6 py-3 rounded-lg transition-colors"
             >
               Take the Assessment
             </Link>
@@ -74,14 +74,14 @@ export default function SharedReportPage() {
       <main className="flex-1 py-12 px-4">
         <div className="max-w-4xl mx-auto">
           {/* Shared report banner */}
-          <div className="mb-8 p-4 rounded-xl bg-blue-500/10 border border-blue-500/20 text-center">
-            <p className="text-blue-400 text-sm">
+          <div className="mb-8 p-4 rounded-xl bg-blue-50 border border-blue-200 text-center">
+            <p className="text-blue-700 text-sm">
               You&apos;re viewing a shared AI Career Impact Report for{" "}
-              <span className="text-white font-medium">{surveyData.jobTitle}</span>
+              <span className="text-gray-900 font-medium">{surveyData.jobTitle}</span>
             </p>
             <Link
               href="/survey"
-              className="inline-block mt-2 text-sm text-red-400 hover:text-red-300 underline"
+              className="inline-block mt-2 text-sm text-gray-900 hover:text-gray-700 underline"
             >
               Get your own free assessment
             </Link>
@@ -90,16 +90,16 @@ export default function SharedReportPage() {
           <ReportCard report={report} />
 
           {/* CTA */}
-          <div className="mt-12 text-center p-8 rounded-2xl border border-white/10 bg-white/[0.02]">
-            <h2 className="text-2xl font-bold text-white mb-3">
+          <div className="mt-12 text-center p-8 rounded-2xl border border-gray-200 bg-gray-50">
+            <h2 className="text-2xl font-bold text-gray-900 mb-3">
               Want to see your own AI risk score?
             </h2>
-            <p className="text-zinc-400 mb-6">
+            <p className="text-gray-500 mb-6">
               Take the free 2-minute assessment and get a personalized report with your risk score, timeline, and action plan.
             </p>
             <Link
               href="/survey"
-              className="inline-flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white text-lg font-semibold px-8 py-4 rounded-xl transition-all hover:scale-105"
+              className="inline-flex items-center gap-2 bg-gray-900 hover:bg-gray-800 text-white text-lg font-medium px-8 py-4 rounded-lg transition-colors"
             >
               Take the Assessment — Free
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

@@ -1,10 +1,10 @@
 export default function Footer() {
   return (
-    <footer className="border-t border-white/10 py-8 mt-auto">
-      <div className="max-w-6xl mx-auto px-4 text-center text-zinc-500 text-sm">
-        <p>&copy; {new Date().getFullYear()} JobsAIWillReplace.com. All rights reserved.</p>
-        <p className="mt-2">
-          AI predictions are estimates based on current trends and should not be taken as career advice.
+    <footer className="border-t border-gray-200 py-8 mt-auto">
+      <div className="max-w-5xl mx-auto px-4 text-center text-gray-400 text-xs">
+        <p>&copy; {new Date().getFullYear()} JobsAIWillReplace.com</p>
+        <p className="mt-1">
+          Predictions are estimates based on current trends and do not constitute career advice.
         </p>
       </div>
     </footer>

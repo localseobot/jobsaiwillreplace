@@ -11,38 +11,38 @@ import { PaidReport, SurveyData } from "@/lib/types";
 
 function TrendBadge({ direction }: { direction: string }) {
   const config: Record<string, { label: string; color: string }> = {
-    rapidly_automating: { label: "Rapidly Automating", color: "bg-zinc-800 text-red-400/80 border-zinc-700" },
-    moderately_automating: { label: "Moderately Automating", color: "bg-zinc-800 text-amber-400/80 border-zinc-700" },
-    slowly_automating: { label: "Slowly Automating", color: "bg-zinc-800 text-zinc-300 border-zinc-700" },
-    stable: { label: "Stable", color: "bg-zinc-800 text-zinc-400/80 border-zinc-700" },
+    rapidly_automating: { label: "Rapidly Automating", color: "bg-red-50 text-red-700 border-red-200" },
+    moderately_automating: { label: "Moderately Automating", color: "bg-amber-50 text-amber-700 border-amber-200" },
+    slowly_automating: { label: "Slowly Automating", color: "bg-gray-50 text-gray-600 border-gray-200" },
+    stable: { label: "Stable", color: "bg-emerald-50 text-emerald-700 border-emerald-200" },
   };
   const c = config[direction] || config.stable;
   return <span className={`text-xs font-medium px-3 py-1 rounded border ${c.color}`}>{c.label}</span>;
 }
 
 function ImpactBadge({ level }: { level: string }) {
-  return <span className="text-xs font-medium px-2 py-0.5 rounded border border-zinc-700 bg-zinc-800 text-zinc-400 capitalize">{level}</span>;
+  return <span className="text-xs font-medium px-2 py-0.5 rounded border border-gray-200 bg-gray-50 text-gray-600 capitalize">{level}</span>;
 }
 
 function DifficultyBadge({ difficulty }: { difficulty: string }) {
-  return <span className="text-xs font-medium px-2 py-0.5 rounded border border-zinc-700 bg-zinc-800 text-zinc-400 capitalize">{difficulty}</span>;
+  return <span className="text-xs font-medium px-2 py-0.5 rounded border border-gray-200 bg-gray-50 text-gray-600 capitalize">{difficulty}</span>;
 }
 
 function PriorityBadge({ priority }: { priority: string }) {
   const colors: Record<string, string> = {
-    critical: "text-red-400/80",
-    high: "text-amber-400/80",
-    medium: "text-zinc-400",
+    critical: "text-red-700 bg-red-50 border-red-200",
+    high: "text-amber-700 bg-amber-50 border-amber-200",
+    medium: "text-gray-600 bg-gray-50 border-gray-200",
   };
-  return <span className={`text-xs font-medium px-2 py-0.5 rounded border border-zinc-700 bg-zinc-800 capitalize ${colors[priority] || colors.medium}`}>{priority}</span>;
+  return <span className={`text-xs font-medium px-2 py-0.5 rounded border capitalize ${colors[priority] || colors.medium}`}>{priority}</span>;
 }
 
 function SectionHeader({ title, subtitle }: { icon?: React.ReactNode; title: string; subtitle?: string }) {
   return (
     <div className="mb-6">
-      <h2 className="text-xl font-semibold text-white tracking-tight">{title}</h2>
-      {subtitle && <p className="text-zinc-500 mt-1 text-sm">{subtitle}</p>}
-      <div className="mt-3 h-px bg-zinc-800" />
+      <h2 className="text-xl font-semibold text-gray-900 tracking-tight">{title}</h2>
+      {subtitle && <p className="text-gray-500 mt-1 text-sm">{subtitle}</p>}
+      <div className="mt-3 h-px bg-gray-200" />
     </div>
   );
 }
@@ -65,26 +65,26 @@ function BenchmarkSection({ benchmarks, riskScore }: { benchmarks: Benchmarks; r
         subtitle={`Based on ${benchmarks.totalAssessments.toLocaleString()} assessments`}
       />
       <div className="grid md:grid-cols-3 gap-4">
-        <div className="p-5 rounded-2xl border border-zinc-800 bg-zinc-900/50 text-center">
-          <div className="text-3xl font-bold text-white">{benchmarks.percentile}%</div>
-          <div className="text-zinc-400 text-sm mt-1">
-            of people scored <span className="text-white">higher risk</span> than you
+        <div className="p-5 rounded-2xl border border-gray-200 bg-white text-center">
+          <div className="text-3xl font-bold text-gray-900">{benchmarks.percentile}%</div>
+          <div className="text-gray-500 text-sm mt-1">
+            of people scored <span className="text-gray-900 font-medium">higher risk</span> than you
           </div>
         </div>
         {benchmarks.avgAll !== null && (
-          <div className="p-5 rounded-2xl border border-zinc-800 bg-zinc-900/50 text-center">
-            <div className="text-3xl font-bold text-white">{benchmarks.avgAll}</div>
-            <div className="text-zinc-400 text-sm mt-1">Average score across all roles</div>
-            <div className={`text-xs mt-2 font-medium ${riskScore < benchmarks.avgAll ? "text-green-400" : "text-red-400"}`}>
+          <div className="p-5 rounded-2xl border border-gray-200 bg-white text-center">
+            <div className="text-3xl font-bold text-gray-900">{benchmarks.avgAll}</div>
+            <div className="text-gray-500 text-sm mt-1">Average score across all roles</div>
+            <div className={`text-xs mt-2 font-medium ${riskScore < benchmarks.avgAll ? "text-emerald-600" : "text-red-600"}`}>
               You are {Math.abs(riskScore - benchmarks.avgAll)} pts {riskScore < benchmarks.avgAll ? "below" : "above"} avg
             </div>
           </div>
         )}
         {benchmarks.avgIndustry && (
-          <div className="p-5 rounded-2xl border border-zinc-800 bg-zinc-900/50 text-center">
-            <div className="text-3xl font-bold text-white">{benchmarks.avgIndustry.score}</div>
-            <div className="text-zinc-400 text-sm mt-1">Industry average ({benchmarks.avgIndustry.count} assessments)</div>
-            <div className={`text-xs mt-2 font-medium ${riskScore < benchmarks.avgIndustry.score ? "text-green-400" : "text-red-400"}`}>
+          <div className="p-5 rounded-2xl border border-gray-200 bg-white text-center">
+            <div className="text-3xl font-bold text-gray-900">{benchmarks.avgIndustry.score}</div>
+            <div className="text-gray-500 text-sm mt-1">Industry average ({benchmarks.avgIndustry.count} assessments)</div>
+            <div className={`text-xs mt-2 font-medium ${riskScore < benchmarks.avgIndustry.score ? "text-emerald-600" : "text-red-600"}`}>
               You are {Math.abs(riskScore - benchmarks.avgIndustry.score)} pts {riskScore < benchmarks.avgIndustry.score ? "below" : "above"} avg
             </div>
           </div>
@@ -108,7 +108,6 @@ export default function ProReportPage() {
     if (storedReport && storedSurvey) {
       setReport(JSON.parse(storedReport));
       setSurveyData(JSON.parse(storedSurvey));
-      // Get report ID if available
       const storedId = sessionStorage.getItem("reportId");
       if (storedId) setReportId(storedId);
     } else {
@@ -116,7 +115,6 @@ export default function ProReportPage() {
     }
   }, [router]);
 
-  // Fetch benchmarks once report loads
   useEffect(() => {
     if (!report || !surveyData) return;
     fetch(
@@ -132,7 +130,7 @@ export default function ProReportPage() {
       <>
         <Header />
         <main className="flex-1 flex items-center justify-center">
-          <svg className="animate-spin w-10 h-10 text-red-500" viewBox="0 0 24 24" fill="none">
+          <svg className="animate-spin w-10 h-10 text-gray-400" viewBox="0 0 24 24" fill="none">
             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
           </svg>
@@ -149,25 +147,25 @@ export default function ProReportPage() {
         <div className="max-w-4xl mx-auto">
           {/* Title */}
           <div className="text-center mb-10">
-            <div className="inline-block px-3 py-1 bg-zinc-800 text-zinc-400 text-xs font-semibold rounded border border-zinc-700 uppercase tracking-widest mb-4">
+            <div className="inline-block px-3 py-1 bg-gray-100 text-gray-500 text-xs font-semibold rounded border border-gray-200 uppercase tracking-widest mb-4">
               Career Impact Assessment
             </div>
-            <h1 className="text-3xl md:text-4xl font-bold text-white tracking-tight">
+            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight">
               Your AI Career Strategy Report
             </h1>
-            <p className="text-zinc-400 mt-2 text-lg">
+            <p className="text-gray-500 mt-2 text-lg">
               Personalized analysis for{" "}
-              <span className="text-white font-medium">{surveyData?.jobTitle}</span>{" "}
-              in <span className="text-white font-medium">{surveyData?.industry}</span>
+              <span className="text-gray-900 font-medium">{surveyData?.jobTitle}</span>{" "}
+              in <span className="text-gray-900 font-medium">{surveyData?.industry}</span>
             </p>
           </div>
 
           {/* Share & Download Bar */}
-          <div className="mb-10 p-6 rounded-2xl border border-zinc-800 bg-zinc-900/50">
+          <div className="mb-10 p-6 rounded-2xl border border-gray-200 bg-gray-50">
             <div className="flex flex-col md:flex-row items-center gap-4">
               <div className="flex-1 text-center md:text-left">
-                <h3 className="text-white font-semibold text-lg">Download Your Report</h3>
-                <p className="text-zinc-400 text-sm mt-1">Get your full AI Career Impact Assessment as a professional PDF.</p>
+                <h3 className="text-gray-900 font-semibold text-lg">Download Your Report</h3>
+                <p className="text-gray-500 text-sm mt-1">Get your full AI Career Impact Assessment as a professional PDF.</p>
               </div>
               <div className="flex items-center gap-3">
                 <DownloadReport report={report} surveyData={surveyData!} />
@@ -178,7 +176,7 @@ export default function ProReportPage() {
                       setLinkCopied(true);
                       setTimeout(() => setLinkCopied(false), 2500);
                     }}
-                    className="flex items-center gap-2 px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white hover:bg-white/10 transition-colors text-sm font-medium whitespace-nowrap"
+                    className="flex items-center gap-2 px-4 py-3 rounded-lg bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 transition-colors text-sm font-medium whitespace-nowrap"
                   >
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
@@ -192,7 +190,7 @@ export default function ProReportPage() {
 
           {/* Social Media Sharing */}
           <div className="mb-10">
-            <h3 className="text-sm font-semibold text-zinc-400 uppercase tracking-wider mb-4">
+            <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-4">
               Share Your Results
             </h3>
             <ShareCard report={report} surveyData={surveyData!} reportId={reportId} />
@@ -201,29 +199,28 @@ export default function ProReportPage() {
           {/* Risk Score & Core Info */}
           <ReportCard report={report} />
 
-          {/* Benchmarks - Compare with others */}
+          {/* Benchmarks */}
           {benchmarks && <BenchmarkSection benchmarks={benchmarks} riskScore={report.riskScore} />}
 
-          {/* Immediate Actions - placed early for urgency */}
+          {/* Immediate Actions */}
           {report.immediateActions && report.immediateActions.length > 0 && (
             <section className="mt-12">
               <SectionHeader
- d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>}
                 title="Do This Now"
                 subtitle="Immediate actions you should take this week"
               />
               <div className="space-y-3">
                 {report.immediateActions.map((item, i) => (
-                  <div key={i} className="p-5 rounded-2xl border border-zinc-800 bg-zinc-900/50 flex gap-4">
-                    <div className="w-8 h-8 rounded-full bg-zinc-800 text-zinc-400 flex items-center justify-center font-bold shrink-0 text-sm">
+                  <div key={i} className="p-5 rounded-2xl border border-gray-200 bg-white flex gap-4">
+                    <div className="w-8 h-8 rounded-full bg-gray-100 text-gray-500 flex items-center justify-center font-bold shrink-0 text-sm">
                       {i + 1}
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center justify-between">
-                        <h3 className="text-white font-semibold">{item.action}</h3>
-                        <span className="text-xs text-zinc-500 shrink-0 ml-2">{item.timeToComplete}</span>
+                        <h3 className="text-gray-900 font-semibold">{item.action}</h3>
+                        <span className="text-xs text-gray-400 shrink-0 ml-2">{item.timeToComplete}</span>
                       </div>
-                      <p className="text-zinc-400 text-sm mt-1">{item.why}</p>
+                      <p className="text-gray-500 text-sm mt-1">{item.why}</p>
                     </div>
                   </div>
                 ))}
@@ -235,32 +232,31 @@ export default function ProReportPage() {
           {report.industryOutlook && (
             <section className="mt-12">
               <SectionHeader
- d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" /></svg>}
                 title="Industry Outlook"
                 subtitle={`How AI is reshaping ${surveyData?.industry}`}
               />
-              <div className="p-6 rounded-2xl border border-zinc-800 bg-zinc-900/50">
+              <div className="p-6 rounded-2xl border border-gray-200 bg-white">
                 <div className="flex items-center gap-3 mb-4">
                   <TrendBadge direction={report.industryOutlook.trendDirection} />
                 </div>
-                <p className="text-zinc-300 leading-relaxed">{report.industryOutlook.currentState}</p>
+                <p className="text-gray-600 leading-relaxed">{report.industryOutlook.currentState}</p>
                 <div className="grid md:grid-cols-2 gap-6 mt-6">
                   <div>
-                    <h4 className="text-sm font-medium text-zinc-400 uppercase tracking-wider mb-3">Key Drivers</h4>
+                    <h4 className="text-sm font-medium text-gray-400 uppercase tracking-wider mb-3">Key Drivers</h4>
                     <ul className="space-y-2">
                       {report.industryOutlook.keyDrivers?.map((driver, i) => (
-                        <li key={i} className="flex items-start gap-2 text-zinc-300 text-sm">
-                          <span className="text-zinc-600 mt-0.5">-</span>
+                        <li key={i} className="flex items-start gap-2 text-gray-600 text-sm">
+                          <span className="text-gray-300 mt-0.5">-</span>
                           {driver}
                         </li>
                       ))}
                     </ul>
                   </div>
                   <div>
-                    <h4 className="text-sm font-medium text-zinc-400 uppercase tracking-wider mb-3">Companies Leading Change</h4>
+                    <h4 className="text-sm font-medium text-gray-400 uppercase tracking-wider mb-3">Companies Leading Change</h4>
                     <div className="flex flex-wrap gap-2">
                       {report.industryOutlook.notableCompanies?.map((company, i) => (
-                        <span key={i} className="text-sm px-3 py-1 rounded-full bg-white/5 text-zinc-300 border border-white/10">{company}</span>
+                        <span key={i} className="text-sm px-3 py-1 rounded-full bg-gray-50 text-gray-600 border border-gray-200">{company}</span>
                       ))}
                     </div>
                   </div>
@@ -273,30 +269,28 @@ export default function ProReportPage() {
           {report.timelinePhases && report.timelinePhases.length > 0 && (
             <section className="mt-12">
               <SectionHeader
- d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>}
                 title="AI Impact Timeline"
                 subtitle="How automation will affect your role over the next decade"
               />
               <div className="relative">
-                <div className="absolute left-[19px] top-6 bottom-6 w-0.5 bg-zinc-800" />
+                <div className="absolute left-[19px] top-6 bottom-6 w-0.5 bg-gray-200" />
                 <div className="space-y-4">
                   {report.timelinePhases.map((phase, i) => (
                     <div key={i} className="flex gap-4 relative">
                       <div className={`w-10 h-10 rounded-full shrink-0 flex items-center justify-center text-sm font-bold z-10 ${
-                        i === 0 ? "bg-zinc-800 text-zinc-400 border border-green-500/30" :
-                        i === 1 ? "bg-zinc-800 text-zinc-400 border border-yellow-500/30" :
-                        i === 2 ? "bg-zinc-800 text-zinc-400 border border-zinc-700" :
-                        "bg-zinc-800 text-zinc-400 border border-zinc-700"
+                        i === 0 ? "bg-white text-gray-600 border-2 border-emerald-300" :
+                        i === 1 ? "bg-white text-gray-600 border-2 border-amber-300" :
+                        "bg-white text-gray-600 border-2 border-gray-200"
                       }`}>
                         {i + 1}
                       </div>
-                      <div className="flex-1 p-5 rounded-2xl border border-zinc-800 bg-zinc-900/50">
+                      <div className="flex-1 p-5 rounded-2xl border border-gray-200 bg-white">
                         <div className="flex items-center gap-3 flex-wrap">
-                          <h3 className="text-white font-semibold">{phase.phase}</h3>
-                          <span className="text-xs text-zinc-500">{phase.timeframe}</span>
+                          <h3 className="text-gray-900 font-semibold">{phase.phase}</h3>
+                          <span className="text-xs text-gray-400">{phase.timeframe}</span>
                           <ImpactBadge level={phase.impactLevel} />
                         </div>
-                        <p className="text-zinc-400 mt-2 text-sm leading-relaxed">{phase.description}</p>
+                        <p className="text-gray-500 mt-2 text-sm leading-relaxed">{phase.description}</p>
                       </div>
                     </div>
                   ))}
@@ -309,42 +303,41 @@ export default function ProReportPage() {
           {report.taskAnalysis && report.taskAnalysis.length > 0 && (
             <section className="mt-12">
               <SectionHeader
- d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>}
                 title="Task-by-Task Analysis"
                 subtitle="Automation risk for each of your core responsibilities"
               />
               <div className="space-y-4">
                 {report.taskAnalysis.map((task, i) => (
-                  <div key={i} className="p-6 rounded-2xl border border-zinc-800 bg-zinc-900/50">
+                  <div key={i} className="p-6 rounded-2xl border border-gray-200 bg-white">
                     <div className="flex items-center justify-between mb-3">
-                      <h3 className="text-lg font-semibold text-white">{task.task}</h3>
+                      <h3 className="text-lg font-semibold text-gray-900">{task.task}</h3>
                       <span className={`text-sm font-bold px-3 py-1 rounded-full ${
-                        task.automationRisk >= 70 ? "bg-red-500/20 text-red-400" :
-                        task.automationRisk >= 40 ? "bg-zinc-800 text-zinc-400" :
-                        "bg-zinc-800 text-zinc-400"
+                        task.automationRisk >= 70 ? "bg-red-50 text-red-700" :
+                        task.automationRisk >= 40 ? "bg-amber-50 text-amber-700" :
+                        "bg-emerald-50 text-emerald-700"
                       }`}>
                         {task.automationRisk}% risk
                       </span>
                     </div>
                     {/* Risk bar */}
-                    <div className="h-1.5 bg-white/10 rounded-full mb-3 overflow-hidden">
+                    <div className="h-1.5 bg-gray-100 rounded-full mb-3 overflow-hidden">
                       <div
                         className={`h-full rounded-full ${
                           task.automationRisk >= 70 ? "bg-red-500" :
-                          task.automationRisk >= 40 ? "bg-yellow-500" :
-                          "bg-green-500"
+                          task.automationRisk >= 40 ? "bg-amber-500" :
+                          "bg-emerald-500"
                         }`}
                         style={{ width: `${task.automationRisk}%` }}
                       />
                     </div>
-                    <p className="text-zinc-400 text-sm">{task.explanation}</p>
+                    <p className="text-gray-500 text-sm">{task.explanation}</p>
                     {task.currentAICapability && (
-                      <p className="text-zinc-500 text-sm mt-2 italic">Current AI capability: {task.currentAICapability}</p>
+                      <p className="text-gray-400 text-sm mt-2 italic">Current AI capability: {task.currentAICapability}</p>
                     )}
                     {task.toolsAvailable && task.toolsAvailable.length > 0 && (
                       <div className="mt-3 flex flex-wrap gap-2">
                         {task.toolsAvailable.map((tool, j) => (
-                          <span key={j} className="text-xs px-2 py-1 rounded-md bg-zinc-800 text-zinc-400 border border-zinc-700">
+                          <span key={j} className="text-xs px-2 py-1 rounded-md bg-gray-50 text-gray-600 border border-gray-200">
                             {tool}
                           </span>
                         ))}
@@ -360,21 +353,20 @@ export default function ProReportPage() {
           {report.automationPlaybook && report.automationPlaybook.length > 0 && (
             <section className="mt-12">
               <SectionHeader
- d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>}
                 title="Automation Playbook"
                 subtitle="Tasks you can start automating today to save time"
               />
               <div className="space-y-4">
                 {report.automationPlaybook.map((item, i) => (
-                  <div key={i} className="p-6 rounded-2xl border border-zinc-800 bg-zinc-900/50">
+                  <div key={i} className="p-6 rounded-2xl border border-gray-200 bg-white">
                     <div className="flex items-center justify-between mb-2">
-                      <h3 className="text-white font-semibold">{item.task}</h3>
+                      <h3 className="text-gray-900 font-semibold">{item.task}</h3>
                       <div className="flex items-center gap-2">
                         <DifficultyBadge difficulty={item.difficulty} />
-                        <span className="text-xs text-zinc-400 font-medium">Save {item.timeSaved}</span>
+                        <span className="text-xs text-gray-400 font-medium">Save {item.timeSaved}</span>
                       </div>
                     </div>
-                    <p className="text-zinc-300 text-sm leading-relaxed">{item.howToAutomate}</p>
+                    <p className="text-gray-600 text-sm leading-relaxed">{item.howToAutomate}</p>
                   </div>
                 ))}
               </div>
@@ -385,32 +377,31 @@ export default function ProReportPage() {
           {report.salaryImpact && (
             <section className="mt-12">
               <SectionHeader
- d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>}
                 title="Salary & Career Impact"
               />
-              <div className="p-6 rounded-2xl border border-zinc-800 bg-zinc-900/50 space-y-6">
+              <div className="p-6 rounded-2xl border border-gray-200 bg-white space-y-6">
                 <div>
-                  <h4 className="text-sm font-medium text-zinc-400 uppercase tracking-wider mb-2">Current Outlook</h4>
-                  <p className="text-zinc-300 leading-relaxed">{report.salaryImpact.currentOutlook}</p>
+                  <h4 className="text-sm font-medium text-gray-400 uppercase tracking-wider mb-2">Current Outlook</h4>
+                  <p className="text-gray-600 leading-relaxed">{report.salaryImpact.currentOutlook}</p>
                 </div>
                 <div>
-                  <h4 className="text-sm font-medium text-zinc-400 uppercase tracking-wider mb-2">Projected Change</h4>
-                  <p className="text-zinc-300 leading-relaxed">{report.salaryImpact.projectedChange}</p>
+                  <h4 className="text-sm font-medium text-gray-400 uppercase tracking-wider mb-2">Projected Change</h4>
+                  <p className="text-gray-600 leading-relaxed">{report.salaryImpact.projectedChange}</p>
                 </div>
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
-                    <h4 className="text-sm font-medium text-zinc-400 uppercase tracking-wider mb-3">High-Value Skills to Develop</h4>
+                    <h4 className="text-sm font-medium text-gray-400 uppercase tracking-wider mb-3">High-Value Skills to Develop</h4>
                     <div className="flex flex-wrap gap-2">
                       {report.salaryImpact.highValueSkills?.map((skill, i) => (
-                        <span key={i} className="text-sm px-3 py-1.5 rounded-lg bg-zinc-800 text-zinc-300 border border-zinc-700">{skill}</span>
+                        <span key={i} className="text-sm px-3 py-1.5 rounded-lg bg-gray-50 text-gray-700 border border-gray-200">{skill}</span>
                       ))}
                     </div>
                   </div>
                   <div>
-                    <h4 className="text-sm font-medium text-zinc-400 uppercase tracking-wider mb-3">Emerging Roles in Your Field</h4>
+                    <h4 className="text-sm font-medium text-gray-400 uppercase tracking-wider mb-3">Emerging Roles in Your Field</h4>
                     <div className="flex flex-wrap gap-2">
                       {report.salaryImpact.emergingRoles?.map((role, i) => (
-                        <span key={i} className="text-sm px-3 py-1.5 rounded-lg bg-zinc-800 text-zinc-300 border border-zinc-700">{role}</span>
+                        <span key={i} className="text-sm px-3 py-1.5 rounded-lg bg-gray-50 text-gray-700 border border-gray-200">{role}</span>
                       ))}
                     </div>
                   </div>
@@ -423,26 +414,25 @@ export default function ProReportPage() {
           {report.learningRoadmap && report.learningRoadmap.length > 0 && (
             <section className="mt-12">
               <SectionHeader
- d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>}
                 title="Your Learning Roadmap"
                 subtitle="Skills to learn, ordered by priority"
               />
               <div className="space-y-4">
                 {report.learningRoadmap.map((item, i) => (
-                  <div key={i} className="p-6 rounded-2xl border border-zinc-800 bg-zinc-900/50">
+                  <div key={i} className="p-6 rounded-2xl border border-gray-200 bg-white">
                     <div className="flex items-center gap-3 mb-2">
-                      <div className="w-8 h-8 rounded-full bg-zinc-800 text-zinc-400 flex items-center justify-center font-bold shrink-0 text-sm">
+                      <div className="w-8 h-8 rounded-full bg-gray-100 text-gray-500 flex items-center justify-center font-bold shrink-0 text-sm">
                         {i + 1}
                       </div>
-                      <h3 className="text-lg font-semibold text-white flex-1">{item.title}</h3>
+                      <h3 className="text-lg font-semibold text-gray-900 flex-1">{item.title}</h3>
                       <PriorityBadge priority={item.priority} />
-                      <span className="text-xs text-zinc-500">{item.timeframe}</span>
+                      <span className="text-xs text-gray-400">{item.timeframe}</span>
                     </div>
-                    <p className="text-zinc-400 text-sm ml-11">{item.description}</p>
+                    <p className="text-gray-500 text-sm ml-11">{item.description}</p>
                     {item.resources && item.resources.length > 0 && (
                       <div className="mt-3 ml-11 flex flex-wrap gap-2">
                         {item.resources.map((res, j) => (
-                          <span key={j} className="text-xs px-2 py-1 rounded-md bg-zinc-800 text-zinc-300 border border-zinc-700">{res}</span>
+                          <span key={j} className="text-xs px-2 py-1 rounded-md bg-gray-50 text-gray-600 border border-gray-200">{res}</span>
                         ))}
                       </div>
                     )}
@@ -456,7 +446,6 @@ export default function ProReportPage() {
           {report.aiTools && report.aiTools.length > 0 && (
             <section className="mt-12">
               <SectionHeader
- d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>}
                 title="AI Tools for Your Role"
                 subtitle="Tools you can start using today"
               />
@@ -467,22 +456,22 @@ export default function ProReportPage() {
                     href={tool.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="p-5 rounded-2xl border border-zinc-800 bg-zinc-900/50 hover:bg-zinc-800/70 transition-colors group"
+                    className="p-5 rounded-2xl border border-gray-200 bg-white hover:bg-gray-50 transition-colors group"
                   >
                     <div className="flex items-center justify-between mb-2">
-                      <h3 className="text-white font-semibold group-hover:text-zinc-300 transition-colors">
+                      <h3 className="text-gray-900 font-semibold group-hover:text-gray-700 transition-colors">
                         {tool.name}
                         <svg className="w-3.5 h-3.5 inline ml-1 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                         </svg>
                       </h3>
                       {tool.category && (
-                        <span className="text-xs px-2 py-0.5 rounded-full bg-white/5 text-zinc-500">{tool.category}</span>
+                        <span className="text-xs px-2 py-0.5 rounded-full bg-gray-50 text-gray-400 border border-gray-200">{tool.category}</span>
                       )}
                     </div>
-                    <p className="text-zinc-400 text-sm">{tool.description}</p>
+                    <p className="text-gray-500 text-sm">{tool.description}</p>
                     {tool.pricing && (
-                      <p className="text-zinc-500 text-xs mt-2">{tool.pricing}</p>
+                      <p className="text-gray-400 text-xs mt-2">{tool.pricing}</p>
                     )}
                   </a>
                 ))}
@@ -494,7 +483,6 @@ export default function ProReportPage() {
           {report.videoResources && report.videoResources.length > 0 && (
             <section className="mt-12">
               <SectionHeader
- d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>}
                 title="Recommended Courses & Videos"
               />
               <div className="space-y-3">
@@ -504,21 +492,21 @@ export default function ProReportPage() {
                     href={video.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="block p-5 rounded-2xl border border-zinc-800 bg-zinc-900/50 hover:bg-zinc-800/70 transition-colors group"
+                    className="block p-5 rounded-2xl border border-gray-200 bg-white hover:bg-gray-50 transition-colors group"
                   >
                     <div className="flex items-center justify-between">
-                      <h3 className="text-white font-semibold group-hover:text-zinc-300 transition-colors">
+                      <h3 className="text-gray-900 font-semibold group-hover:text-gray-700 transition-colors">
                         {video.title}
                         <svg className="w-3.5 h-3.5 inline ml-1 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                         </svg>
                       </h3>
                       <div className="flex items-center gap-2 shrink-0 ml-2">
-                        {video.platform && <span className="text-xs text-zinc-500">{video.platform}</span>}
-                        {video.duration && <span className="text-xs px-2 py-0.5 rounded-full bg-white/5 text-zinc-400">{video.duration}</span>}
+                        {video.platform && <span className="text-xs text-gray-400">{video.platform}</span>}
+                        {video.duration && <span className="text-xs px-2 py-0.5 rounded-full bg-gray-50 text-gray-500 border border-gray-200">{video.duration}</span>}
                       </div>
                     </div>
-                    <p className="text-zinc-400 text-sm mt-1">{video.description}</p>
+                    <p className="text-gray-500 text-sm mt-1">{video.description}</p>
                   </a>
                 ))}
               </div>
@@ -529,30 +517,27 @@ export default function ProReportPage() {
           {report.futureProofStrategies && report.futureProofStrategies.length > 0 && (
             <section className="mt-12 mb-8">
               <SectionHeader
- d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>}
                 title="Career Future-Proofing Strategies"
               />
               <div className="space-y-4">
                 {report.futureProofStrategies.map((item, i) => {
                   const strategy = typeof item === "string" ? { strategy: item, explanation: "", actionSteps: [] } : item;
                   return (
-                    <div key={i} className="p-6 rounded-2xl border border-zinc-800 bg-zinc-900/50">
+                    <div key={i} className="p-6 rounded-2xl border border-gray-200 bg-white">
                       <div className="flex items-start gap-3">
-                        <div className="w-8 h-8 rounded-full bg-zinc-800 text-zinc-400 flex items-center justify-center text-sm font-bold shrink-0">
+                        <div className="w-8 h-8 rounded-full bg-gray-100 text-gray-500 flex items-center justify-center text-sm font-bold shrink-0">
                           {i + 1}
                         </div>
                         <div className="flex-1">
-                          <h3 className="text-white font-semibold">{strategy.strategy}</h3>
+                          <h3 className="text-gray-900 font-semibold">{strategy.strategy}</h3>
                           {strategy.explanation && (
-                            <p className="text-zinc-400 text-sm mt-1 leading-relaxed">{strategy.explanation}</p>
+                            <p className="text-gray-500 text-sm mt-1 leading-relaxed">{strategy.explanation}</p>
                           )}
                           {strategy.actionSteps && strategy.actionSteps.length > 0 && (
                             <ul className="mt-3 space-y-1.5">
                               {strategy.actionSteps.map((step, j) => (
-                                <li key={j} className="flex items-start gap-2 text-sm text-zinc-300">
-                                  <svg className="w-4 h-4 text-zinc-500 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                                  </svg>
+                                <li key={j} className="flex items-start gap-2 text-gray-600 text-sm">
+                                  <span className="text-gray-300 mt-0.5">-</span>
                                   {step}
                                 </li>
                               ))}
@@ -566,60 +551,6 @@ export default function ProReportPage() {
               </div>
             </section>
           )}
-
-          {/* Coaching / Next Steps CTA */}
-          <section className="mt-16 mb-8">
-            <div className="p-8 rounded-2xl border border-zinc-800 bg-zinc-900/50">
-              <div className="text-center max-w-2xl mx-auto">
-                <div className="inline-block px-3 py-1 bg-zinc-800 text-zinc-400 text-xs font-semibold rounded border border-zinc-700 uppercase tracking-widest mb-4">
-                  Next Steps
-                </div>
-                <h2 className="text-2xl font-bold text-white mb-3">
-                  Ready to Future-Proof Your Career?
-                </h2>
-                <p className="text-zinc-400 mb-8 leading-relaxed">
-                  Your report is just the beginning. Take action on the recommendations above,
-                  and consider investing in your skills to stay ahead of AI disruption.
-                </p>
-                <div className="grid md:grid-cols-3 gap-4 text-left">
-                  <a
-                    href="https://www.coursera.org/browse/information-technology/artificial-intelligence"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-4 rounded-xl bg-zinc-900/50 border border-zinc-800 hover:bg-zinc-800/70 transition-colors group"
-                  >
-                    <div className="text-white font-semibold group-hover:text-zinc-300 transition-colors">
-                      AI & ML Courses
-                    </div>
-                    <p className="text-zinc-500 text-sm mt-1">Coursera&apos;s top-rated AI programs</p>
-                  </a>
-                  <a
-                    href="https://www.linkedin.com/learning/topics/artificial-intelligence"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-4 rounded-xl bg-zinc-900/50 border border-zinc-800 hover:bg-zinc-800/70 transition-colors group"
-                  >
-                    <div className="text-white font-semibold group-hover:text-zinc-300 transition-colors">
-                      LinkedIn Learning
-                    </div>
-                    <p className="text-zinc-500 text-sm mt-1">AI skills employers look for</p>
-                  </a>
-                  <a
-                    href="https://www.udemy.com/topic/artificial-intelligence/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-4 rounded-xl bg-zinc-900/50 border border-zinc-800 hover:bg-zinc-800/70 transition-colors group"
-                  >
-                    <div className="text-white font-semibold group-hover:text-zinc-300 transition-colors">
-                      Udemy AI Bootcamps
-                    </div>
-                    <p className="text-zinc-500 text-sm mt-1">Hands-on AI tool training</p>
-                  </a>
-                </div>
-              </div>
-            </div>
-          </section>
-
         </div>
       </main>
       <Footer />
