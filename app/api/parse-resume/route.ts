@@ -10,39 +10,19 @@ export async function POST(req: NextRequest) {
     }
 
     const bytes = await file.arrayBuffer();
+    const buffer = Buffer.from(bytes);
 
     let text = "";
 
     if (file.name.toLowerCase().endsWith(".pdf")) {
-      // Dynamic import to avoid bundling issues in serverless
-      const pdfjsLib = await import("pdfjs-dist/legacy/build/pdf.mjs");
-
-      // Disable worker — not available in serverless
-      pdfjsLib.GlobalWorkerOptions.workerSrc = "";
-
-      const uint8Array = new Uint8Array(bytes);
-      const doc = await pdfjsLib.getDocument({
-        data: uint8Array,
-        useWorkerFetch: false,
-        isEvalSupported: false,
-        useSystemFonts: true,
-      }).promise;
-
-      const pages: string[] = [];
-      for (let i = 1; i <= doc.numPages; i++) {
-        const page = await doc.getPage(i);
-        const content = await page.getTextContent();
-        const strings = content.items
-          .filter((item): item is { str: string } & typeof item => "str" in item)
-          .map((item) => (item as unknown as { str: string }).str);
-        pages.push(strings.join(" "));
-      }
-      text = pages.join("\n\n");
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const pdfParse = require("pdf-parse");
+      const data = await pdfParse(buffer);
+      text = data.text;
     } else if (
       file.name.toLowerCase().endsWith(".txt") ||
       file.name.toLowerCase().endsWith(".md")
     ) {
-      const buffer = Buffer.from(bytes);
       text = buffer.toString("utf-8");
     } else {
       return NextResponse.json(
@@ -58,7 +38,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Trim to reasonable length for the AI prompt
     const trimmedText = text.slice(0, 5000);
 
     return NextResponse.json({ text: trimmedText });

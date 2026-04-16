@@ -188,7 +188,7 @@ export default function Home() {
                 {
                   step: "01",
                   title: "Share your background",
-                  desc: "Upload your resume, paste your LinkedIn URL, or answer 7 quick questions about your role.",
+                  desc: "Upload your resume or answer 7 quick questions about your role.",
                 },
                 {
                   step: "02",

@@ -246,10 +246,6 @@ export default function SurveyForm() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const upfrontFileInputRef = useRef<HTMLInputElement>(null);
 
-  // LinkedIn state
-  const [linkedinUrl, setLinkedinUrl] = useState("");
-  const [linkedinLoading, setLinkedinLoading] = useState(false);
-  const [linkedinError, setLinkedinError] = useState("");
 
   const totalSteps = 9; // method choice + 7 questions + email
   const progress = step <= -1 ? 0 : ((step + 1) / totalSteps) * 100;
@@ -358,35 +354,6 @@ export default function SurveyForm() {
     if (upfrontFileInputRef.current) upfrontFileInputRef.current.value = "";
   }
 
-  // LinkedIn analysis
-  async function handleLinkedInSubmit() {
-    if (!linkedinUrl.trim()) return;
-
-    setLinkedinLoading(true);
-    setLinkedinError("");
-
-    try {
-      const res = await fetch("/api/analyze-linkedin", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ linkedinUrl }),
-      });
-
-      const result = await res.json();
-
-      if (!res.ok) {
-        throw new Error(result.error || "Couldn't analyze that profile. Try uploading your resume instead.");
-      }
-
-      setData(result.surveyData);
-      setAutoFilled(true);
-      setStep(7);
-    } catch (err) {
-      setLinkedinError(err instanceof Error ? err.message : "Couldn't analyze that profile. Try uploading your resume instead.");
-    } finally {
-      setLinkedinLoading(false);
-    }
-  }
 
   function canProceed(): boolean {
     switch (step) {
@@ -536,57 +503,10 @@ export default function SurveyForm() {
               How would you like to get started?
             </h2>
             <p className="text-gray-500 mb-8">
-              Connect your LinkedIn, upload your resume, or answer a few quick questions.
+              Upload your resume or answer a few quick questions.
             </p>
 
             <div className="grid gap-4">
-              {/* LinkedIn Option */}
-              <div className="p-6 rounded-xl border border-gray-200 bg-white">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 rounded-full bg-[#0A66C2]/10 flex items-center justify-center shrink-0">
-                    <svg className="w-5 h-5 text-[#0A66C2]" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <span className="text-gray-900 font-semibold">Paste Your LinkedIn Profile</span>
-                    <p className="text-gray-500 text-sm">Fastest way — we&apos;ll analyze your profile instantly</p>
-                  </div>
-                </div>
-
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    value={linkedinUrl}
-                    onChange={(e) => { setLinkedinUrl(e.target.value); setLinkedinError(""); }}
-                    placeholder="linkedin.com/in/yourname"
-                    className="flex-1 px-4 py-3 rounded-lg bg-white border border-gray-300 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-gray-400 focus:ring-1 focus:ring-gray-400"
-                    onKeyDown={(e) => e.key === "Enter" && linkedinUrl.trim() && handleLinkedInSubmit()}
-                  />
-                  <button
-                    onClick={handleLinkedInSubmit}
-                    disabled={!linkedinUrl.trim() || linkedinLoading}
-                    className="px-5 py-3 rounded-lg bg-gray-900 hover:bg-gray-800 text-white font-medium transition-colors disabled:opacity-50 flex items-center gap-2 shrink-0"
-                  >
-                    {linkedinLoading ? (
-                      <>
-                        <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                        </svg>
-                        Analyzing...
-                      </>
-                    ) : (
-                      "Analyze"
-                    )}
-                  </button>
-                </div>
-
-                {linkedinError && (
-                  <p className="mt-2 text-red-600 text-sm">{linkedinError}</p>
-                )}
-              </div>
-
               {/* Upload Resume Option */}
               <label
                 className={`relative flex flex-col items-center p-8 rounded-xl border-2 border-dashed transition-all cursor-pointer ${
