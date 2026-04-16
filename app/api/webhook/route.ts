@@ -19,10 +19,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
   }
 
-  if (event.type === "payment_intent.succeeded") {
-    const paymentIntent = event.data.object as Stripe.PaymentIntent;
-    console.log("Payment succeeded:", paymentIntent.id);
-    // Payment confirmed - the client will handle report generation
+  if (event.type === "checkout.session.completed") {
+    const session = event.data.object as Stripe.Checkout.Session;
+    console.log("Checkout completed:", session.id, "Payment:", session.payment_status);
   }
 
   return NextResponse.json({ received: true });
