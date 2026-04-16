@@ -62,14 +62,12 @@ Every field should be evidence-based where possible. Only infer when data isn't 
 
 function normalizeLinkedInUrl(input: string): string | null {
   let url = input.trim();
-  // Handle various formats
   if (!url.startsWith("http")) {
     if (url.startsWith("linkedin.com") || url.startsWith("www.linkedin.com")) {
       url = "https://" + url;
     } else if (url.startsWith("in/")) {
       url = "https://www.linkedin.com/" + url;
     } else {
-      // Assume it's just a username
       url = "https://www.linkedin.com/in/" + url;
     }
   }
@@ -84,66 +82,50 @@ function normalizeLinkedInUrl(input: string): string | null {
 }
 
 async function fetchLinkedInProfile(url: string): Promise<string> {
-  // Fetch the public profile page and extract meta tags
-  const res = await fetch(url, {
+  const firecrawlKey = process.env.FIRECRAWL_API_KEY;
+  if (!firecrawlKey) {
+    throw new Error("FIRECRAWL_API_KEY not configured");
+  }
+
+  const res = await fetch("https://api.firecrawl.dev/v1/scrape", {
+    method: "POST",
     headers: {
-      "User-Agent": "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
-      "Accept": "text/html,application/xhtml+xml",
-      "Accept-Language": "en-US,en;q=0.9",
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${firecrawlKey}`,
     },
-    redirect: "follow",
+    body: JSON.stringify({
+      url,
+      formats: ["markdown"],
+      onlyMainContent: true,
+    }),
   });
 
   if (!res.ok) {
-    throw new Error("Could not fetch LinkedIn profile");
+    const errBody = await res.text().catch(() => "");
+    console.error("Firecrawl error:", res.status, errBody);
+    throw new Error("SCRAPE_FAILED");
   }
 
-  const html = await res.text();
+  const data = await res.json();
 
-  // Extract useful meta tags
-  const metaPatterns = [
-    // og:title usually contains "Name - Title - Company"
-    /<meta[^>]*property="og:title"[^>]*content="([^"]*)"[^>]*>/i,
-    // og:description contains the about/summary
-    /<meta[^>]*property="og:description"[^>]*content="([^"]*)"[^>]*>/i,
-    // Regular title tag
-    /<title>([^<]*)<\/title>/i,
-    // meta description
-    /<meta[^>]*name="description"[^>]*content="([^"]*)"[^>]*>/i,
-  ];
-
-  const extracted: string[] = [];
-  for (const pattern of metaPatterns) {
-    const match = html.match(pattern);
-    if (match && match[1]) {
-      extracted.push(match[1].trim());
-    }
-  }
-
-  // Also try to get any JSON-LD structured data
-  const jsonLdMatch = html.match(/<script[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/i);
-  if (jsonLdMatch && jsonLdMatch[1]) {
-    try {
-      const jsonLd = JSON.parse(jsonLdMatch[1]);
-      if (jsonLd.name) extracted.push(`Name: ${jsonLd.name}`);
-      if (jsonLd.jobTitle) extracted.push(`Job Title: ${jsonLd.jobTitle}`);
-      if (jsonLd.description) extracted.push(`Description: ${jsonLd.description}`);
-      if (jsonLd.alumniOf) {
-        const schools = Array.isArray(jsonLd.alumniOf) ? jsonLd.alumniOf : [jsonLd.alumniOf];
-        for (const school of schools) {
-          if (school.name) extracted.push(`Education: ${school.name}`);
-        }
-      }
-    } catch {
-      // JSON-LD parsing failed, continue with meta tags
-    }
-  }
-
-  if (extracted.length === 0) {
+  if (!data.success || !data.data) {
     throw new Error("NO_DATA");
   }
 
-  return extracted.join("\n");
+  const parts: string[] = [];
+
+  // Use metadata for structured info
+  if (data.data.metadata?.title) parts.push(data.data.metadata.title);
+  if (data.data.metadata?.description) parts.push(data.data.metadata.description);
+
+  // Use markdown for full profile content
+  if (data.data.markdown) parts.push(data.data.markdown);
+
+  if (parts.length === 0) {
+    throw new Error("NO_DATA");
+  }
+
+  return parts.join("\n\n");
 }
 
 export async function POST(req: NextRequest) {
@@ -189,7 +171,7 @@ export async function POST(req: NextRequest) {
       model: "gpt-4o",
       messages: [
         { role: "system", content: PROMPT },
-        { role: "user", content: profileText.slice(0, 3000) },
+        { role: "user", content: profileText.slice(0, 5000) },
       ],
       temperature: 0.3,
       max_tokens: 500,
