@@ -43,9 +43,10 @@ export default function Home() {
       <main className="flex-1" ref={pageRef}>
         {/* ───── Hero ───── */}
         <section className="max-w-4xl mx-auto px-4 pt-24 pb-20 text-center">
-          <div className="mb-6">
+          <h1 className="mb-6">
             <Logo size="hero" />
-          </div>
+            <span className="sr-only">Jobs AI Will Replace — AI Career Risk Tracker</span>
+          </h1>
           <p className="text-lg md:text-xl text-brand-gray max-w-2xl mx-auto leading-relaxed mt-6">
             Tracking the jobs AI is automating — and what you can do before it
             reaches yours.

@@ -17,14 +17,33 @@ export async function generateMetadata({
   const post = getPostBySlug(slug);
   if (!post) return {};
   return {
-    title: `${post.title} — Jobs AI Will Replace`,
+    title: post.title,
     description: post.description,
     keywords: post.keywords,
+    alternates: {
+      canonical: `https://jobsaiwillreplace.com/blog/${slug}`,
+    },
     openGraph: {
       title: post.title,
       description: post.description,
       type: "article",
       publishedTime: post.date,
+      url: `https://jobsaiwillreplace.com/blog/${slug}`,
+      siteName: "Jobs AI Will Replace",
+      images: [
+        {
+          url: "/api/og",
+          width: 1200,
+          height: 630,
+          alt: post.title,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description: post.description,
+      images: ["/api/og"],
     },
   };
 }
@@ -38,8 +57,37 @@ export default async function BlogPostPage({
   const post = getPostBySlug(slug);
   if (!post) notFound();
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: post.title,
+    description: post.description,
+    datePublished: post.date,
+    author: {
+      "@type": "Organization",
+      name: "Jobs AI Will Replace",
+      url: "https://jobsaiwillreplace.com",
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "Jobs AI Will Replace",
+      url: "https://jobsaiwillreplace.com",
+      logo: {
+        "@type": "ImageObject",
+        url: "https://jobsaiwillreplace.com/logo.png",
+      },
+    },
+    mainEntityOfPage: `https://jobsaiwillreplace.com/blog/${slug}`,
+    image: "https://jobsaiwillreplace.com/api/og",
+    keywords: post.keywords.join(", "),
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <Header />
       <main className="flex-1 py-12">
         <article className="max-w-3xl mx-auto px-4">

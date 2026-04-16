@@ -4,9 +4,18 @@ import Footer from "@/components/Footer";
 import { getAllPosts } from "@/lib/blog";
 
 export const metadata = {
-  title: "Blog — Jobs AI Will Replace",
+  title: "AI Job Displacement Blog — Research, Analysis & Career Strategies",
   description:
-    "The latest insights on AI job displacement, career survival strategies, and which industries face the biggest disruption.",
+    "The latest insights on AI job displacement, career survival strategies, and which industries face the biggest disruption. Stay ahead of the AI revolution.",
+  alternates: {
+    canonical: "https://jobsaiwillreplace.com/blog",
+  },
+  openGraph: {
+    title: "AI Job Displacement Blog — Research, Analysis & Career Strategies",
+    description:
+      "The latest insights on AI job displacement, career survival strategies, and which industries face the biggest disruption.",
+    url: "https://jobsaiwillreplace.com/blog",
+  },
 };
 
 export default function BlogPage() {
