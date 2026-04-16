@@ -11,4 +11,4 @@ export function getStripe(): Stripe {
   return _stripe;
 }
 
-export const REPORT_PRICE = 1900; // $19.00 in cents
+export const REPORT_PRICE = 900; // $9.00 in cents

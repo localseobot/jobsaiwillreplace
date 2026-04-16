@@ -444,13 +444,13 @@ export default function SurveyForm() {
         }),
       }).catch(() => {});
 
-      // Generate report
+      // Generate FREE report first (user must pay to unlock full report)
       const res = await fetch("/api/generate-report", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           surveyData: data,
-          tier: "paid",
+          tier: "free",
           resumeText: resumeText || undefined,
         }),
       });
@@ -461,21 +461,10 @@ export default function SurveyForm() {
 
       const result = await res.json();
       sessionStorage.setItem("surveyData", JSON.stringify(data));
-      sessionStorage.setItem("paidReport", JSON.stringify(result.report));
+      sessionStorage.setItem("freeReport", JSON.stringify(result.report));
+      if (resumeText) sessionStorage.setItem("resumeText", resumeText);
 
-      // Save report to DB for shareable link (non-blocking)
-      fetch("/api/save-report", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ report: result.report, surveyData: data }),
-      })
-        .then((r) => r.json())
-        .then((d) => {
-          if (d.id) sessionStorage.setItem("reportId", d.id);
-        })
-        .catch(() => {});
-
-      router.push("/report-pro");
+      router.push("/report");
     } catch {
       setLoading(false);
       setGenerationError(true);

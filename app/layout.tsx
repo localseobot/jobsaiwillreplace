@@ -13,9 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Jobs AI Will Replace | Will AI Take Your Job?",
+  title: "Is Your Job Safe From AI? | Free AI Career Risk Assessment",
   description:
-    "Find out how likely AI is to replace your job. Take our free assessment and get a personalized AI impact report with timeline predictions and actionable insights.",
+    "Find out how vulnerable your job is to AI automation. Get your free risk score and a personalized plan to future-proof your career.",
   keywords: [
     "AI job replacement",
     "will AI take my job",
@@ -24,9 +24,9 @@ export const metadata: Metadata = {
     "AI career impact",
   ],
   openGraph: {
-    title: "Jobs AI Will Replace | Will AI Take Your Job?",
+    title: "Is Your Job Safe From AI? | Free Career Risk Assessment",
     description:
-      "Find out how likely AI is to replace your job. Get your personalized AI impact report.",
+      "Find out how vulnerable your job is to AI. Get your free risk score and a plan to stay ahead.",
     type: "website",
     url: "https://jobsaiwillreplace.com",
     images: [
@@ -40,9 +40,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Will AI Replace Your Job?",
+    title: "Is Your Job Safe From AI?",
     description:
-      "Free AI-powered career impact assessment. Get your risk score, timeline, and action plan.",
+      "Free AI career risk assessment. Get your score and a personalized plan to future-proof your career.",
     images: ["https://jobsaiwillreplace.com/api/og"],
   },
 };

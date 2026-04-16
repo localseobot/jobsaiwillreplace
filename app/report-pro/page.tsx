@@ -148,13 +148,13 @@ export default function ProReportPage() {
           {/* Title */}
           <div className="text-center mb-10">
             <div className="inline-block px-3 py-1 bg-gray-100 text-gray-500 text-xs font-semibold rounded border border-gray-200 uppercase tracking-widest mb-4">
-              Career Impact Assessment
+              AI-Proof Career Plan
             </div>
             <h1 className="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight">
-              Your AI Career Strategy Report
+              Your AI-Proof Career Plan
             </h1>
             <p className="text-gray-500 mt-2 text-lg">
-              Personalized analysis for{" "}
+              Personalized action plan for{" "}
               <span className="text-gray-900 font-medium">{surveyData?.jobTitle}</span>{" "}
               in <span className="text-gray-900 font-medium">{surveyData?.industry}</span>
             </p>
@@ -164,8 +164,8 @@ export default function ProReportPage() {
           <div className="mb-10 p-6 rounded-2xl border border-gray-200 bg-gray-50">
             <div className="flex flex-col md:flex-row items-center gap-4">
               <div className="flex-1 text-center md:text-left">
-                <h3 className="text-gray-900 font-semibold text-lg">Download Your Report</h3>
-                <p className="text-gray-500 text-sm mt-1">Get your full AI Career Impact Assessment as a professional PDF.</p>
+                <h3 className="text-gray-900 font-semibold text-lg">Download Your Plan</h3>
+                <p className="text-gray-500 text-sm mt-1">Get your full AI-Proof Career Plan as a professional PDF.</p>
               </div>
               <div className="flex items-center gap-3">
                 <DownloadReport report={report} surveyData={surveyData!} />

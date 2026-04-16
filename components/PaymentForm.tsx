@@ -80,7 +80,7 @@ function CheckoutForm({ onSuccess }: { onSuccess: () => void }) {
             Processing...
           </>
         ) : (
-          "Pay $19 — Get Pro Report"
+          "Pay $9 — Unlock My Plan"
         )}
       </button>
     </form>
