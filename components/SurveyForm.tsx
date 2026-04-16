@@ -73,7 +73,7 @@ function LoadingScreen({ jobTitle }: { jobTitle: string }) {
 
       {/* Spinner */}
       <div className="relative w-16 h-16 mx-auto mb-8">
-        <svg className="animate-spin w-16 h-16 text-gray-300" viewBox="0 0 24 24" fill="none">
+        <svg className="animate-spin w-16 h-16 text-brand-red" viewBox="0 0 24 24" fill="none">
           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
         </svg>
@@ -98,7 +98,7 @@ function LoadingScreen({ jobTitle }: { jobTitle: string }) {
         {/* Progress bar */}
         <div className="relative h-2 bg-gray-200 rounded-full overflow-hidden">
           <div
-            className="absolute inset-y-0 left-0 rounded-full bg-gray-900 transition-all duration-500"
+            className="absolute inset-y-0 left-0 rounded-full bg-brand-red transition-all duration-500"
             style={{ width: `${Math.round(progress)}%` }}
           />
         </div>
@@ -110,7 +110,7 @@ function LoadingScreen({ jobTitle }: { jobTitle: string }) {
               <div
                 className={`w-2 h-2 rounded-full transition-all duration-500 ${
                   i <= stage
-                    ? "bg-gray-900"
+                    ? "bg-brand-red"
                     : "bg-gray-200"
                 }`}
               />
@@ -535,14 +535,14 @@ export default function SurveyForm() {
 
                 {resumeUploading || resumeAnalyzing ? (
                   <div className="flex flex-col items-center gap-3">
-                    <svg className="animate-spin w-10 h-10 text-gray-400" viewBox="0 0 24 24" fill="none">
+                    <svg className="animate-spin w-10 h-10 text-brand-red" viewBox="0 0 24 24" fill="none">
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                     </svg>
-                    <span className="text-gray-600 font-medium">
+                    <span className="text-brand-black font-medium">
                       {resumeUploading ? "Parsing your resume..." : "AI is analyzing your experience..."}
                     </span>
-                    <span className="text-gray-400 text-sm">
+                    <span className="text-brand-gray text-sm">
                       {resumeUploading ? "Extracting text from your file" : "Identifying your role, skills, and industry"}
                     </span>
                   </div>
@@ -909,11 +909,11 @@ export default function SurveyForm() {
               <div className="p-6 rounded-lg border border-gray-200 bg-gray-50">
                 {resumeUploading ? (
                   <div className="flex items-center gap-3">
-                    <svg className="animate-spin w-6 h-6 text-gray-500" viewBox="0 0 24 24" fill="none">
+                    <svg className="animate-spin w-6 h-6 text-brand-red" viewBox="0 0 24 24" fill="none">
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                     </svg>
-                    <span className="text-gray-600">Parsing your resume...</span>
+                    <span className="text-brand-black">Parsing your resume...</span>
                   </div>
                 ) : (
                   <div className="flex items-center justify-between">
