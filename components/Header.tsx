@@ -15,6 +15,16 @@ export default function Header() {
         </Link>
         <nav className="flex items-center gap-6">
           <Link
+            href="/blog"
+            className={`text-sm font-medium transition-colors ${
+              pathname.startsWith("/blog")
+                ? "text-brand-black nav-active"
+                : "text-brand-gray hover:text-brand-black"
+            }`}
+          >
+            Blog
+          </Link>
+          <Link
             href="/survey"
             className={`text-sm font-medium transition-colors ${
               pathname === "/survey"
