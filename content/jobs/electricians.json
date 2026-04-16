@@ -1,0 +1,39 @@
+{
+  "slug": "electricians",
+  "title": "Will AI Replace Electricians?",
+  "description": "Will AI replace electricians? Skilled trades like electrical work are among the safest careers from AI disruption due to physical dexterity and on-site judgment.",
+  "riskLevel": "low",
+  "riskScore": 12,
+  "timeline": "10+ years",
+  "summary": "Electricians are among the most AI-resistant professionals. The job demands physical dexterity in unpredictable environments, on-the-spot problem solving in unique building configurations, and strict safety compliance that requires human judgment. AI and robotics are decades away from handling the variability of real-world electrical work.",
+  "whatAiCanDo": [
+    "Assist with electrical system design, load calculations, and circuit layout planning",
+    "Analyze building blueprints and suggest optimal wiring routes and panel placements",
+    "Monitor electrical systems remotely using IoT sensors and predict equipment failures",
+    "Automate permit documentation and code compliance checking",
+    "Provide augmented reality overlays to help electricians locate wires behind walls"
+  ],
+  "whatAiCantDo": [
+    "Physically run wire through walls, crawl spaces, and ceilings in varied building structures",
+    "Troubleshoot live electrical issues that require tactile feedback and real-time safety assessment",
+    "Adapt to the unique layout and conditions of every job site, from renovations to new construction",
+    "Make safety-critical decisions when encountering unexpected conditions like water damage or faulty previous work",
+    "Interact with homeowners, contractors, and inspectors to coordinate complex projects"
+  ],
+  "futureOutlook": "The U.S. Bureau of Labor Statistics projects 11% growth in electrician jobs through 2032, much faster than average. Demand is surging due to the green energy transition—solar panel installations, EV charging infrastructure, battery storage systems, and smart home technology all require skilled electricians. The aging workforce and insufficient trade school enrollment are creating a significant labor shortage. While AI tools will help electricians work more efficiently through better diagnostics and project planning, the physical, variable nature of the work makes full automation essentially impossible with foreseeable technology. Electricians who add specializations in renewable energy and smart systems will be exceptionally well-positioned.",
+  "howToAdapt": [
+    "Get certified in solar installation, EV charging station setup, and battery storage systems",
+    "Learn to use smart home and building automation technologies that are driving new demand",
+    "Adopt AI-powered diagnostic tools and project management software to increase efficiency",
+    "Pursue master electrician and contractor licenses to move into higher-value supervisory and business roles"
+  ],
+  "keywords": [
+    "will AI replace electricians",
+    "AI skilled trades automation",
+    "electrician job security AI",
+    "future of electrician careers",
+    "can robots replace electricians",
+    "trades jobs safe from AI",
+    "electrician career outlook AI"
+  ]
+}

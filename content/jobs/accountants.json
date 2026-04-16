@@ -1,0 +1,39 @@
+{
+  "slug": "accountants",
+  "title": "Will AI Replace Accountants?",
+  "description": "Discover whether AI will replace accountants. Learn which accounting tasks are most at risk, what stays human, and how to future-proof your career.",
+  "riskLevel": "high",
+  "riskScore": 72,
+  "timeline": "3-5 years",
+  "summary": "AI is rapidly automating core accounting functions like tax preparation, bookkeeping, and financial reporting. However, strategic advisory, complex tax planning, and client relationship management remain firmly in human territory, meaning accountants who adapt will thrive while those focused purely on compliance face displacement.",
+  "whatAiCanDo": [
+    "Automate bookkeeping, bank reconciliations, and accounts payable/receivable with near-perfect accuracy",
+    "Prepare standard tax returns and flag common deductions using tools like Intuit AI and TurboTax Live",
+    "Generate real-time financial reports and dashboards from raw data",
+    "Detect anomalies, fraud patterns, and compliance risks across large transaction datasets",
+    "Classify and categorize expenses automatically using machine learning"
+  ],
+  "whatAiCantDo": [
+    "Provide strategic tax planning advice tailored to complex personal or business situations",
+    "Navigate ambiguous regulatory gray areas requiring professional judgment",
+    "Build trusted advisory relationships with clients during major life or business events",
+    "Represent clients in IRS audits or negotiate with tax authorities",
+    "Interpret new or evolving tax legislation and advise on its business implications"
+  ],
+  "futureOutlook": "The accounting profession is undergoing a significant structural shift. The Bureau of Labor Statistics projects slower growth for traditional accounting roles, while advisory-focused positions are expanding. Firms like Deloitte and PwC are investing heavily in AI-powered audit tools, and routine compliance work is increasingly handled by software. By 2028, accountants who combine financial expertise with data analytics and advisory skills will command premium salaries, while those limited to manual bookkeeping and basic tax prep will find fewer opportunities. The profession is not disappearing — it is evolving from number-crunching to strategic counsel.",
+  "howToAdapt": [
+    "Earn certifications in data analytics platforms like Power BI, Tableau, or Python for financial modeling",
+    "Shift your practice toward advisory services — CFO-as-a-service, strategic tax planning, and business consulting",
+    "Learn to work alongside AI accounting tools like Xero, QuickBooks AI, and automated audit platforms",
+    "Develop soft skills in client communication and relationship management that AI cannot replicate"
+  ],
+  "keywords": [
+    "will AI replace accountants",
+    "AI accounting automation",
+    "accountant jobs AI",
+    "future of accounting AI",
+    "AI bookkeeping",
+    "will robots replace accountants",
+    "accounting career AI risk"
+  ]
+}

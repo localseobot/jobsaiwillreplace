@@ -1,0 +1,39 @@
+{
+  "slug": "lawyers",
+  "title": "Will AI Replace Lawyers?",
+  "description": "Find out if AI will replace lawyers. Explore which legal tasks face automation, what remains uniquely human, and how attorneys can stay ahead.",
+  "riskLevel": "moderate",
+  "riskScore": 48,
+  "timeline": "5-10 years",
+  "summary": "AI is transforming legal work by automating document review, contract analysis, and legal research at unprecedented speed. Yet courtroom advocacy, complex negotiations, ethical judgment, and client counseling remain deeply human skills that AI cannot replicate, keeping the core of legal practice secure for adaptable attorneys.",
+  "whatAiCanDo": [
+    "Review and analyze thousands of legal documents in hours during e-discovery using tools like Relativity and Luminance",
+    "Draft routine contracts, NDAs, and legal templates with high accuracy",
+    "Conduct legal research across case law databases far faster than human associates",
+    "Predict case outcomes based on historical data and judge-specific patterns",
+    "Flag regulatory compliance issues and track legislative changes automatically"
+  ],
+  "whatAiCantDo": [
+    "Argue persuasively before a judge or jury with emotional intelligence and rhetorical skill",
+    "Navigate complex multi-party negotiations requiring strategic judgment and empathy",
+    "Exercise ethical reasoning in novel legal situations with no clear precedent",
+    "Build trust-based attorney-client relationships during high-stakes personal matters",
+    "Interpret the spirit of the law in ambiguous cases where precedent conflicts"
+  ],
+  "futureOutlook": "The legal industry is adopting AI faster than many expected. Major firms like Allen & Overy have deployed AI assistants for contract work, and legal tech startups raised over $1.5 billion in 2024 alone. Paralegals and junior associates focused on document review face the greatest displacement. However, demand for lawyers who can leverage AI tools while providing strategic counsel is growing. The American Bar Association projects steady overall employment, but the composition of legal work is shifting dramatically toward higher-value tasks. Lawyers who embrace AI will handle larger caseloads more efficiently, while those who resist may find themselves outpaced by tech-savvy competitors.",
+  "howToAdapt": [
+    "Master legal AI platforms like Harvey AI, CoCounsel, and Luminance to multiply your productivity",
+    "Specialize in practice areas requiring heavy human judgment — litigation, M&A negotiations, or emerging tech law",
+    "Develop expertise in AI governance, data privacy, and technology regulation as a growing niche",
+    "Build your reputation as a strategic advisor rather than a document processor"
+  ],
+  "keywords": [
+    "will AI replace lawyers",
+    "AI legal automation",
+    "lawyer jobs AI",
+    "future of law AI",
+    "AI contract review",
+    "will robots replace attorneys",
+    "legal profession AI impact"
+  ]
+}

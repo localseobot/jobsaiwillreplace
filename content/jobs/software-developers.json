@@ -1,0 +1,39 @@
+{
+  "slug": "software-developers",
+  "title": "Will AI Replace Software Developers?",
+  "description": "Will AI replace software developers? Learn which coding tasks AI handles today, what stays human, and how developers can future-proof their careers.",
+  "riskLevel": "moderate",
+  "riskScore": 45,
+  "timeline": "5-10 years",
+  "summary": "AI code generation tools like GitHub Copilot and Claude are already writing boilerplate code, fixing bugs, and accelerating development workflows. However, software architecture, complex system design, understanding business requirements, and creative problem-solving remain firmly human domains, making developers who leverage AI dramatically more productive rather than obsolete.",
+  "whatAiCanDo": [
+    "Generate boilerplate code, unit tests, and standard CRUD operations from natural language prompts",
+    "Autocomplete code with context-aware suggestions that reduce typing by 30-50%",
+    "Identify and fix common bugs, security vulnerabilities, and performance issues",
+    "Translate code between programming languages and modernize legacy codebases",
+    "Write documentation, explain complex code, and assist with code reviews"
+  ],
+  "whatAiCantDo": [
+    "Design complex system architectures that balance scalability, cost, and organizational constraints",
+    "Understand nuanced business requirements and translate ambiguous stakeholder needs into technical solutions",
+    "Debug novel production issues that span multiple services and require deep domain knowledge",
+    "Make strategic technology decisions weighing long-term maintainability and team capabilities",
+    "Collaborate with cross-functional teams to align engineering work with product vision"
+  ],
+  "futureOutlook": "Software development is being augmented, not replaced. GitHub reports that Copilot users complete tasks 55% faster, and adoption is accelerating across the industry. The Bureau of Labor Statistics still projects 25% job growth for software developers through 2032 — among the fastest of any occupation. What is changing is the nature of the work: junior developers focused purely on writing basic code face more competition, while senior engineers who architect systems and leverage AI tools are in higher demand than ever. The real disruption is a productivity multiplier — one AI-equipped developer can now do what previously required a small team for routine tasks.",
+  "howToAdapt": [
+    "Become proficient with AI coding assistants like GitHub Copilot, Claude, and Cursor to multiply your output",
+    "Invest in system design, architecture, and infrastructure skills that AI cannot easily replicate",
+    "Develop strong product thinking and business domain expertise beyond pure technical skills",
+    "Learn to write effective AI prompts and review AI-generated code for correctness, security, and maintainability"
+  ],
+  "keywords": [
+    "will AI replace software developers",
+    "AI coding automation",
+    "programmer jobs AI",
+    "future of software engineering AI",
+    "GitHub Copilot replace developers",
+    "AI software development",
+    "developer career AI risk"
+  ]
+}

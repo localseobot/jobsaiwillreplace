@@ -25,6 +25,16 @@ export default function Header() {
             Blog
           </Link>
           <Link
+            href="/faq"
+            className={`text-sm font-medium transition-colors ${
+              pathname === "/faq"
+                ? "text-brand-black nav-active"
+                : "text-brand-gray hover:text-brand-black"
+            }`}
+          >
+            FAQ
+          </Link>
+          <Link
             href="/survey"
             className={`text-sm font-medium transition-colors ${
               pathname === "/survey"

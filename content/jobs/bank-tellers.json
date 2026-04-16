@@ -1,0 +1,39 @@
+{
+  "slug": "bank-tellers",
+  "title": "Will AI Replace Bank Tellers?",
+  "description": "Will AI replace bank tellers? Bank teller jobs are declining fast as ATMs, mobile banking, and AI-powered services automate most routine banking transactions.",
+  "riskLevel": "very-high",
+  "riskScore": 85,
+  "timeline": "Already happening",
+  "summary": "Bank teller positions are among the most at-risk from AI and automation. ATMs, mobile banking apps, and AI-powered customer service have already eliminated the need for most routine transactions. The Bureau of Labor Statistics projects a 15% decline in teller jobs through 2032, and the trend is accelerating as digital banking adoption grows.",
+  "whatAiCanDo": [
+    "Handle deposits, withdrawals, transfers, and bill payments through ATMs and mobile apps",
+    "Provide 24/7 customer support via AI chatbots that resolve most common banking questions",
+    "Verify identity, detect fraud, and process loan applications through automated systems",
+    "Open new accounts, issue replacement cards, and manage routine account changes digitally",
+    "Analyze customer financial behavior to offer personalized product recommendations automatically"
+  ],
+  "whatAiCantDo": [
+    "Provide complex financial guidance for major life events like buying a home, estate planning, or business loans",
+    "Handle sensitive situations requiring empathy, such as fraud victims, elderly customers, or estate settlements",
+    "Build personal banking relationships in communities where face-to-face trust matters",
+    "Resolve unusual account issues that fall outside standard automated workflows",
+    "Serve customers who lack digital literacy or internet access, particularly in rural and underserved areas"
+  ],
+  "futureOutlook": "The bank teller role has been declining for decades and AI is accelerating that trend dramatically. U.S. bank branch numbers have fallen from over 100,000 in 2009 to under 75,000 today, and major banks like JPMorgan Chase and Bank of America continue closing hundreds of branches annually. Digital-only banks like Chime, Ally, and SoFi have proven that millions of customers prefer fully automated banking. The remaining teller positions are evolving into universal banker roles that combine basic transactions with financial advisory and product sales. However, these hybrid roles require significantly more skill and serve far fewer positions than traditional teller jobs supported. For current bank tellers, the writing is clearly on the wall—upskilling into financial advisory, lending, or fintech roles is essential for long-term career viability.",
+  "howToAdapt": [
+    "Pursue certifications in financial planning, lending, or wealth management to move into advisory roles",
+    "Develop sales and relationship management skills to transition into a universal banker or personal banker position",
+    "Build digital literacy and learn fintech platforms, as even remaining bank roles are increasingly technology-driven",
+    "Consider career transitions into related fields like insurance, real estate, or financial technology companies"
+  ],
+  "keywords": [
+    "will AI replace bank tellers",
+    "bank teller jobs declining",
+    "AI banking automation",
+    "future of bank teller careers",
+    "digital banking replacing tellers",
+    "bank teller job outlook AI",
+    "are bank tellers being replaced"
+  ]
+}

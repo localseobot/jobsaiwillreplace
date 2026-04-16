@@ -1,0 +1,39 @@
+{
+  "slug": "photographers",
+  "title": "Will AI Replace Photographers?",
+  "description": "Will AI replace photographers? AI image generation is disrupting stock photography, but event, portrait, and commercial photography still demand human creativity.",
+  "riskLevel": "moderate",
+  "riskScore": 50,
+  "timeline": "3-7 years",
+  "summary": "AI image generation tools like Midjourney, DALL-E, and Stable Diffusion are disrupting stock photography and basic commercial imagery. However, photographers who specialize in events, portraits, photojournalism, and high-end commercial work provide irreplaceable value through creative vision, human connection, and the ability to capture authentic moments.",
+  "whatAiCanDo": [
+    "Generate photorealistic images from text prompts for marketing, advertising, and editorial use",
+    "Automate photo editing tasks like color correction, background removal, retouching, and batch processing",
+    "Upscale low-resolution images and restore damaged or old photographs with remarkable quality",
+    "Create product mockups, lifestyle imagery, and social media content without a photoshoot",
+    "Analyze composition, lighting, and technical settings to recommend optimal camera configurations"
+  ],
+  "whatAiCantDo": [
+    "Capture authentic, unrepeatable moments at weddings, news events, and live performances",
+    "Direct and connect with portrait subjects to draw out genuine emotion and personality",
+    "Develop a unique artistic vision and visual style that defines a photographer's brand",
+    "Adapt in real time to changing light, weather, and unexpected situations on location",
+    "Provide the full client experience—consultation, creative direction, and curated delivery—that high-end photography demands"
+  ],
+  "futureOutlook": "The photography industry is experiencing a stark divide. Stock photography platforms have seen revenue decline as AI-generated images flood the market—Getty Images and Shutterstock have both launched AI generation tools, while simultaneously facing lawsuits over AI training data. For commercial work like product photography and generic marketing imagery, AI is becoming a viable and cheaper alternative. However, the wedding photography market remains strong at over $10 billion annually, portrait photography continues to grow, and photojournalism remains inherently human. Photographers who position themselves around the irreplaceable human elements—being present at moments, building client relationships, and offering creative direction—will continue to thrive. Those competing on commodity imagery face serious pressure.",
+  "howToAdapt": [
+    "Specialize in genres where human presence is essential: weddings, events, portraits, photojournalism, or fine art",
+    "Learn AI editing and generation tools to speed up your workflow and offer new creative services",
+    "Build a distinctive personal brand and visual style that clients seek out specifically",
+    "Expand into video, multimedia content, and creative direction services to diversify your revenue streams"
+  ],
+  "keywords": [
+    "will AI replace photographers",
+    "AI generated images photography",
+    "photographer jobs AI impact",
+    "future of photography careers",
+    "AI image generation vs photographers",
+    "can AI replace professional photographers",
+    "photography career AI disruption"
+  ]
+}

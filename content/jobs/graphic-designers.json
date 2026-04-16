@@ -1,0 +1,39 @@
+{
+  "slug": "graphic-designers",
+  "title": "Will AI Replace Graphic Designers?",
+  "description": "Will AI replace graphic designers? See how AI image generation is disrupting design, which skills stay relevant, and how to adapt your creative career.",
+  "riskLevel": "high",
+  "riskScore": 70,
+  "timeline": "3-5 years",
+  "summary": "AI image generators like Midjourney, DALL-E, and Adobe Firefly are fundamentally disrupting the graphic design industry, producing professional-quality visuals in seconds. While production-level design work faces significant displacement, brand strategy, creative direction, and human-centered design thinking remain valuable skills that AI cannot replicate independently.",
+  "whatAiCanDo": [
+    "Generate high-quality images, illustrations, and concept art from text prompts in seconds",
+    "Create dozens of design variations and mockups for rapid client exploration",
+    "Remove backgrounds, upscale images, and perform complex photo editing automatically",
+    "Design social media graphics, ad creatives, and marketing materials using tools like Canva AI",
+    "Generate consistent brand assets, icons, and UI elements from style references"
+  ],
+  "whatAiCantDo": [
+    "Develop comprehensive brand identities that tell a cohesive story across all touchpoints",
+    "Understand and interpret a client's vision through nuanced creative briefs and feedback sessions",
+    "Ensure designs meet accessibility standards, print specifications, and technical production requirements",
+    "Apply cultural sensitivity and contextual awareness to avoid tone-deaf or inappropriate visuals",
+    "Lead creative strategy and art direction that aligns design with business objectives"
+  ],
+  "futureOutlook": "The graphic design landscape is experiencing its most dramatic transformation since desktop publishing. Stock photography revenue has declined sharply as AI-generated images flood the market, and freelance platforms report increased competition for routine design work. However, the demand for senior designers who can direct AI tools, maintain brand consistency, and think strategically about visual communication is growing. Adobe's integration of Firefly into Creative Suite signals that AI is becoming a design tool rather than a designer replacement. The designers who will thrive are those who position themselves as creative directors leveraging AI, not those competing against it on production speed.",
+  "howToAdapt": [
+    "Master AI design tools — Midjourney, DALL-E, Adobe Firefly, and Canva AI — to accelerate your workflow tenfold",
+    "Shift your positioning from production designer to creative strategist and brand consultant",
+    "Develop skills in motion graphics, 3D design, and UX/UI where AI tools are less mature",
+    "Build a personal brand showcasing your creative thinking process and strategic value, not just polished outputs"
+  ],
+  "keywords": [
+    "will AI replace graphic designers",
+    "AI graphic design",
+    "designer jobs AI",
+    "Midjourney replace designers",
+    "future of graphic design AI",
+    "AI image generation jobs",
+    "creative career AI risk"
+  ]
+}

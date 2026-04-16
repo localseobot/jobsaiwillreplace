@@ -1,0 +1,39 @@
+{
+  "slug": "nurses",
+  "title": "Will AI Replace Nurses?",
+  "description": "Find out if AI will replace nurses. Despite AI advances in diagnostics and monitoring, nursing remains one of the safest careers due to irreplaceable human care.",
+  "riskLevel": "low",
+  "riskScore": 18,
+  "timeline": "10+ years",
+  "summary": "Nursing is one of the most AI-resistant professions. While AI can assist with patient monitoring, documentation, and diagnostics, the physical care, emotional support, and complex clinical judgment that nurses provide daily cannot be replicated by machines.",
+  "whatAiCanDo": [
+    "Monitor patient vitals in real time and flag anomalies faster than manual checks",
+    "Automate routine documentation and electronic health record entries",
+    "Assist with diagnostic imaging analysis and early disease detection",
+    "Optimize nurse scheduling and hospital resource allocation",
+    "Provide medication interaction alerts and dosage verification"
+  ],
+  "whatAiCantDo": [
+    "Perform hands-on physical care like wound dressing, injections, and patient repositioning",
+    "Provide genuine emotional support and comfort to patients and families during crises",
+    "Exercise nuanced clinical judgment in rapidly changing emergency situations",
+    "Build trust and rapport with patients that improves treatment adherence and outcomes",
+    "Adapt instantly to unpredictable patient behaviors and environmental factors"
+  ],
+  "futureOutlook": "The nursing profession is projected to grow significantly through 2032, with the U.S. Bureau of Labor Statistics forecasting a 6% increase in registered nurse positions. AI will serve as a powerful assistant rather than a replacement, handling administrative burdens so nurses can focus more on direct patient care. Hospitals are investing in AI-powered monitoring systems and predictive analytics, but these tools consistently require skilled nurses to interpret results and act on them. The ongoing global nursing shortage actually makes AI augmentation more critical—not to replace nurses, but to help existing staff manage larger patient loads more safely.",
+  "howToAdapt": [
+    "Learn to work with AI-powered clinical decision support systems and telehealth platforms",
+    "Pursue specializations in areas requiring complex human judgment like critical care, oncology, or mental health",
+    "Develop skills in health informatics to bridge the gap between clinical practice and technology",
+    "Stay current with emerging medical devices and AI-assisted diagnostic tools used in your specialty"
+  ],
+  "keywords": [
+    "will AI replace nurses",
+    "AI in nursing",
+    "nurse jobs AI automation",
+    "future of nursing careers",
+    "AI healthcare nursing impact",
+    "can robots replace nurses",
+    "nursing job security AI"
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "slug": "doctors",
+  "title": "Will AI Replace Doctors?",
+  "description": "Will AI replace doctors? Learn how AI is transforming diagnostics and healthcare, what remains uniquely human in medicine, and how physicians can adapt.",
+  "riskLevel": "low-moderate",
+  "riskScore": 30,
+  "timeline": "10+ years",
+  "summary": "AI is proving remarkably capable at diagnostic imaging, drug discovery, and clinical decision support, often matching or exceeding specialist accuracy in narrow tasks. However, the holistic nature of patient care — physical examination, empathetic communication, complex treatment decisions, and surgical skill — keeps physicians firmly in control of medicine's future.",
+  "whatAiCanDo": [
+    "Analyze medical images (X-rays, MRIs, CT scans) with accuracy rivaling radiologists in specific conditions",
+    "Predict patient deterioration and flag high-risk cases using electronic health record patterns",
+    "Accelerate drug discovery by simulating molecular interactions and identifying promising compounds",
+    "Assist with clinical documentation through ambient listening tools like Nuance DAX",
+    "Provide differential diagnosis suggestions based on symptoms, labs, and patient history"
+  ],
+  "whatAiCantDo": [
+    "Perform physical examinations and hands-on procedures including surgery",
+    "Build the trust and empathetic rapport that patients need during vulnerable moments",
+    "Make complex treatment decisions weighing a patient's values, lifestyle, and unique circumstances",
+    "Navigate the ethical dilemmas inherent in end-of-life care, resource allocation, and informed consent",
+    "Adapt in real time to unexpected complications during procedures or acute care situations"
+  ],
+  "futureOutlook": "Healthcare AI is a rapidly growing market projected to exceed $180 billion by 2030, but it is overwhelmingly positioned as a physician support tool, not a replacement. The FDA has approved over 700 AI-enabled medical devices, almost all designed to assist rather than replace clinicians. Radiology and pathology face the most disruption in specific diagnostic tasks, but overall physician demand continues to grow due to aging populations worldwide. The biggest impact will be in underserved areas where AI can extend the reach of limited physician resources. Doctors who embrace AI will deliver faster, more accurate diagnoses while spending more time on the human side of medicine.",
+  "howToAdapt": [
+    "Develop familiarity with AI diagnostic tools relevant to your specialty and advocate for their ethical implementation",
+    "Strengthen patient communication and shared decision-making skills that differentiate you from algorithms",
+    "Stay current on AI-driven clinical research and evidence-based medicine as the pace of discovery accelerates",
+    "Pursue expertise in health informatics or digital health to position yourself at the intersection of medicine and technology"
+  ],
+  "keywords": [
+    "will AI replace doctors",
+    "AI in healthcare",
+    "doctor jobs AI",
+    "future of medicine AI",
+    "AI medical diagnosis",
+    "will robots replace physicians",
+    "healthcare automation AI"
+  ]
+}

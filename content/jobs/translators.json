@@ -1,0 +1,39 @@
+{
+  "slug": "translators",
+  "title": "Will AI Replace Translators?",
+  "description": "Will AI replace translators? Machine translation has improved dramatically with neural AI, but literary, legal, and culturally nuanced translation still needs humans.",
+  "riskLevel": "high",
+  "riskScore": 70,
+  "timeline": "2-5 years",
+  "summary": "Translation is one of the professions most visibly disrupted by AI. Neural machine translation tools like DeepL and Google Translate have reached near-human accuracy for many language pairs and common content types. However, literary translation, legal and medical documents, marketing localization, and culturally sensitive content still require skilled human translators.",
+  "whatAiCanDo": [
+    "Translate standard business documents, emails, and technical manuals with high accuracy across 100+ languages",
+    "Process massive volumes of text instantly—what takes a human translator days, AI handles in seconds",
+    "Provide real-time speech-to-speech translation for basic conversations and meetings",
+    "Learn domain-specific terminology when fine-tuned on specialized corpora",
+    "Continuously improve quality through neural network training on billions of translation examples"
+  ],
+  "whatAiCantDo": [
+    "Capture literary voice, tone, wordplay, poetry, and cultural subtext that defines great literature",
+    "Guarantee the legal precision required for contracts, patents, and court documents where a single word matters",
+    "Localize marketing campaigns with cultural adaptation that resonates authentically in target markets",
+    "Navigate politically sensitive or emotionally charged content requiring human cultural judgment",
+    "Handle rare language pairs, dialects, and indigenous languages with limited training data"
+  ],
+  "futureOutlook": "The translation industry is being fundamentally reshaped. DeepL, Google Translate, and Microsoft Translator now handle the bulk of casual and business translation needs. The global market for machine translation is projected to exceed $4 billion by 2030. Many translation agencies have shifted to a post-editing model where AI produces the first draft and human translators refine it, reducing per-word rates significantly. Entry-level translation jobs focused on straightforward content are disappearing rapidly. However, demand is growing for translators who specialize in literary work, legal and medical precision, transcreation for marketing, and quality assurance of AI outputs. The surviving translator role looks more like an editor, cultural consultant, and quality specialist than a word-by-word converter.",
+  "howToAdapt": [
+    "Specialize in high-value niches like legal, medical, literary, or marketing transcreation where AI accuracy falls short",
+    "Develop expertise in post-editing machine translation (PEMT) to work efficiently with AI-generated drafts",
+    "Build cultural consulting skills that go beyond word translation to advise on localization strategy",
+    "Learn to use translation memory tools, CAT software, and AI platforms to increase output while maintaining quality"
+  ],
+  "keywords": [
+    "will AI replace translators",
+    "AI translation jobs",
+    "machine translation vs human",
+    "future of translation careers",
+    "AI language translation impact",
+    "can AI replace interpreters",
+    "translator job automation risk"
+  ]
+}

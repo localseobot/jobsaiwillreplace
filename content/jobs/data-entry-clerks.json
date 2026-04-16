@@ -1,0 +1,38 @@
+{
+  "slug": "data-entry-clerks",
+  "title": "Will AI Replace Data Entry Clerks?",
+  "description": "Will AI replace data entry clerks? See why data entry is among the highest-risk jobs for AI automation and what career transitions make sense.",
+  "riskLevel": "very-high",
+  "riskScore": 92,
+  "timeline": "1-3 years",
+  "summary": "Data entry is one of the occupations most vulnerable to AI automation, with intelligent document processing, OCR, and robotic process automation already eliminating positions at scale. The Bureau of Labor Statistics projects a 25% decline in data entry jobs through 2032, making this one of the fastest-shrinking occupations in the economy.",
+  "whatAiCanDo": [
+    "Extract data from invoices, forms, receipts, and documents using OCR and intelligent document processing",
+    "Automatically transfer data between systems, databases, and spreadsheets with robotic process automation",
+    "Validate, clean, and deduplicate data entries with higher accuracy than manual processing",
+    "Process handwritten text, scanned documents, and unstructured PDFs with improving reliability",
+    "Handle high-volume data migration and system integration tasks that previously required teams of clerks"
+  ],
+  "whatAiCantDo": [
+    "Interpret highly ambiguous or damaged documents that require contextual judgment calls",
+    "Handle exceptions and edge cases that fall outside trained processing rules without human review",
+    "Make decisions about data categorization in novel situations requiring domain expertise",
+    "Manage sensitive data entry situations requiring human accountability and compliance oversight"
+  ],
+  "futureOutlook": "Data entry is among the clearest cases of AI-driven job displacement already in progress. Tools like UiPath, ABBYY, and Amazon Textract have matured to the point where entire data entry departments are being replaced. McKinsey estimates that 80% of data entry tasks are automatable with current technology. Major companies including banks, insurance firms, and healthcare organizations have already reduced data entry headcounts by 50-80% through automation. The remaining roles will focus on exception handling, quality assurance of AI-processed data, and managing automated workflows rather than manual keystroke entry. Workers in this field should prioritize rapid career transition.",
+  "howToAdapt": [
+    "Learn data analytics, SQL, and spreadsheet automation to move from data entry into data analysis",
+    "Develop skills in RPA tools like UiPath, Power Automate, or Automation Anywhere to manage the bots replacing manual work",
+    "Pursue certifications in business administration, project management, or IT support as adjacent career paths",
+    "Transition into quality assurance or data governance roles that oversee AI-processed data accuracy"
+  ],
+  "keywords": [
+    "will AI replace data entry",
+    "data entry automation",
+    "data entry clerk jobs AI",
+    "future of data entry",
+    "RPA data entry",
+    "data entry career risk",
+    "AI document processing"
+  ]
+}
