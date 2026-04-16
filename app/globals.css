@@ -1,24 +1,100 @@
 @import "tailwindcss";
 
 :root {
+  --brand-red: #E63946;
+  --brand-black: #111111;
+  --brand-gray: #6b6b6b;
+  --brand-light-gray: #8a8a8a;
+  --brand-bg: #fafafa;
+  --brand-border: #e5e5e5;
   --background: #ffffff;
-  --foreground: #1a1a1a;
+  --foreground: #111111;
+
+  --font-primary: 'Inter Tight', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Courier New', monospace;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-brand-red: var(--brand-red);
+  --color-brand-black: var(--brand-black);
+  --color-brand-gray: var(--brand-gray);
+  --color-brand-light-gray: var(--brand-light-gray);
+  --color-brand-bg: var(--brand-bg);
+  --color-brand-border: var(--brand-border);
+  --font-sans: var(--font-primary);
+  --font-mono: var(--font-mono);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  font-family: var(--font-primary);
 }
 
-/* Animations */
+/* ─── Logo strike-through ─── */
+.logo-strike {
+  position: absolute;
+  top: 50%;
+  left: -4px;
+  height: 3.5px;
+  background: var(--brand-red);
+  border-radius: 2px;
+  transform: translateY(-50%);
+  width: 0;
+  animation: strikeThrough 1.5s ease-out 0.5s forwards;
+}
+
+@keyframes strikeThrough {
+  to { width: calc(100% + 8px); }
+}
+
+/* ─── Red accent line above headings ─── */
+.accent-line {
+  width: 60px;
+  height: 2px;
+  background: var(--brand-red);
+  border-radius: 1px;
+}
+
+/* ─── Section divider ─── */
+.section-divider {
+  width: 100%;
+  height: 3px;
+  background: var(--brand-red);
+}
+
+/* ─── Red line reveal animation ─── */
+.line-reveal {
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.line-reveal.visible {
+  transform: scaleX(1);
+}
+
+/* ─── Section slide-up reveal ─── */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Staggered children */
+.reveal-stagger > .reveal:nth-child(1) { transition-delay: 0ms; }
+.reveal-stagger > .reveal:nth-child(2) { transition-delay: 100ms; }
+.reveal-stagger > .reveal:nth-child(3) { transition-delay: 200ms; }
+.reveal-stagger > .reveal:nth-child(4) { transition-delay: 300ms; }
+
+/* ─── General animations ─── */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
@@ -36,3 +112,94 @@ body {
 }
 
 .animate-slide-up-fade { animation: slide-up-fade 5s ease-in-out; }
+
+/* ─── Progress bar fill animation ─── */
+@keyframes progressFill {
+  from { width: 0; }
+}
+
+.progress-bar {
+  height: 6px;
+  background: var(--brand-border);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: var(--brand-red);
+  border-radius: 3px;
+  animation: progressFill 1.2s ease-out forwards;
+}
+
+/* ─── CTA button with red hover ─── */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.875rem 2rem;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  border-radius: 8px;
+  background: var(--brand-black);
+  color: #fff;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.btn-primary:hover {
+  background: var(--brand-red);
+  transform: translateY(-1px);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+/* ─── Card with red accent border ─── */
+.card-accent {
+  border-left: 3px solid var(--brand-red);
+}
+
+/* ─── Active nav underline ─── */
+.nav-active {
+  position: relative;
+}
+
+.nav-active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--brand-red);
+  border-radius: 1px;
+}
+
+/* ─── Reduced motion ─── */
+@media (prefers-reduced-motion: reduce) {
+  .logo-strike {
+    animation: none;
+    width: calc(100% + 8px);
+  }
+
+  .line-reveal {
+    transform: scaleX(1);
+    transition: none;
+  }
+
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .progress-bar-fill {
+    animation: none;
+  }
+
+  .btn-primary {
+    transition: none;
+  }
+}

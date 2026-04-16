@@ -1,32 +1,35 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter_Tight, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const interTight = Inter_Tight({
+  variable: "--font-inter-tight",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-jetbrains-mono",
   subsets: ["latin"],
+  weight: ["400", "500"],
 });
 
 export const metadata: Metadata = {
-  title: "Is Your Job Safe From AI? | Free AI Career Risk Assessment",
+  title: "Jobs AI Will Replace — AI Career Risk Tracker",
   description:
-    "Find out how vulnerable your job is to AI automation. Get your free risk score and a personalized plan to future-proof your career.",
+    "Track which jobs AI is replacing. Get your free risk score and a personalized plan to future-proof your career.",
   keywords: [
     "AI job replacement",
     "will AI take my job",
     "AI automation risk",
     "future of work",
     "AI career impact",
+    "jobs AI will replace",
   ],
   openGraph: {
-    title: "Is Your Job Safe From AI? | Free Career Risk Assessment",
+    title: "Jobs AI Will Replace — AI Career Risk Tracker",
     description:
-      "Find out how vulnerable your job is to AI. Get your free risk score and a plan to stay ahead.",
+      "Track which jobs AI is replacing. Get your free risk score and a plan to stay ahead.",
     type: "website",
     url: "https://jobsaiwillreplace.com",
     images: [
@@ -34,15 +37,15 @@ export const metadata: Metadata = {
         url: "https://jobsaiwillreplace.com/api/og",
         width: 1200,
         height: 630,
-        alt: "Jobs AI Will Replace - AI Career Impact Assessment",
+        alt: "Jobs AI Will Replace - AI Career Impact Tracker",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Is Your Job Safe From AI?",
+    title: "Jobs AI Will Replace",
     description:
-      "Free AI career risk assessment. Get your score and a personalized plan to future-proof your career.",
+      "Track which jobs AI is replacing. Free risk assessment and personalized career plan.",
     images: ["https://jobsaiwillreplace.com/api/og"],
   },
 };
@@ -55,9 +58,11 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${interTight.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col" style={{ fontFamily: "var(--font-inter-tight), system-ui, sans-serif" }}>
+        {children}
+      </body>
     </html>
   );
 }

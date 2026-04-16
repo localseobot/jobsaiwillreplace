@@ -1,12 +1,20 @@
-export default function Logo({ size = "default" }: { variant?: string; size?: "default" | "large" }) {
-  const isLarge = size === "large";
+export default function Logo({ size = "default" }: { variant?: string; size?: "default" | "large" | "hero" }) {
+  const sizeClasses = {
+    default: "text-lg",
+    large: "text-2xl",
+    hero: "text-5xl md:text-7xl lg:text-8xl",
+  };
 
   return (
-    <div className="flex items-center gap-1.5">
-      <span className={`${isLarge ? "text-xl" : "text-base"} font-bold tracking-tight text-gray-900`}>
-        JobsAIWillReplace
+    <span
+      className={`${sizeClasses[size]} font-semibold tracking-tight text-brand-black inline-flex flex-wrap`}
+      style={{ fontFamily: "var(--font-inter-tight), system-ui, sans-serif", fontWeight: 600 }}
+    >
+      <span className="relative inline-block">
+        jobs
+        <span className="logo-strike" aria-hidden="true" />
       </span>
-      <span className={`${isLarge ? "text-xl" : "text-base"} font-bold text-red-600`}>.</span>
-    </div>
+      &nbsp;ai will replace
+    </span>
   );
 }
