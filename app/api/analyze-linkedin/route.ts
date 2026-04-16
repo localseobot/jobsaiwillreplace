@@ -148,50 +148,38 @@ async function fetchLinkedInProfile(url: string): Promise<string> {
 
 export async function POST(req: NextRequest) {
   try {
-    const { linkedinUrl, manualText } = (await req.json()) as {
+    const { linkedinUrl } = (await req.json()) as {
       linkedinUrl?: string;
-      manualText?: string;
     };
 
-    let profileText = "";
-
-    if (manualText && manualText.trim().length > 20) {
-      // User pasted their profile text manually (fallback)
-      profileText = manualText.slice(0, 3000);
-    } else if (linkedinUrl) {
-      const normalizedUrl = normalizeLinkedInUrl(linkedinUrl);
-      if (!normalizedUrl) {
-        return NextResponse.json(
-          { error: "Invalid LinkedIn URL. Please enter a valid LinkedIn profile link." },
-          { status: 400 }
-        );
-      }
-
-      try {
-        profileText = await fetchLinkedInProfile(normalizedUrl);
-      } catch (err) {
-        const message = err instanceof Error ? err.message : "";
-        if (message === "NO_DATA") {
-          return NextResponse.json(
-            { error: "NEED_MANUAL", message: "We couldn't read your LinkedIn profile automatically. Please paste your LinkedIn headline and summary below." },
-            { status: 422 }
-          );
-        }
-        return NextResponse.json(
-          { error: "NEED_MANUAL", message: "LinkedIn blocked our request. Please paste your headline and about section below." },
-          { status: 422 }
-        );
-      }
-    } else {
+    if (!linkedinUrl) {
       return NextResponse.json(
-        { error: "Please provide a LinkedIn URL or profile text" },
+        { error: "Please provide a LinkedIn URL" },
         { status: 400 }
+      );
+    }
+
+    const normalizedUrl = normalizeLinkedInUrl(linkedinUrl);
+    if (!normalizedUrl) {
+      return NextResponse.json(
+        { error: "Invalid LinkedIn URL. Please enter a valid LinkedIn profile link." },
+        { status: 400 }
+      );
+    }
+
+    let profileText = "";
+    try {
+      profileText = await fetchLinkedInProfile(normalizedUrl);
+    } catch {
+      return NextResponse.json(
+        { error: "Couldn't read your LinkedIn profile. Try uploading your resume instead." },
+        { status: 422 }
       );
     }
 
     if (profileText.trim().length < 10) {
       return NextResponse.json(
-        { error: "NEED_MANUAL", message: "Not enough profile information found. Please paste your headline and about section." },
+        { error: "Not enough profile information found. Try uploading your resume instead." },
         { status: 422 }
       );
     }

@@ -250,8 +250,6 @@ export default function SurveyForm() {
   const [linkedinUrl, setLinkedinUrl] = useState("");
   const [linkedinLoading, setLinkedinLoading] = useState(false);
   const [linkedinError, setLinkedinError] = useState("");
-  const [linkedinNeedManual, setLinkedinNeedManual] = useState(false);
-  const [linkedinManualText, setLinkedinManualText] = useState("");
 
   const totalSteps = 9; // method choice + 7 questions + email
   const progress = step <= -1 ? 0 : ((step + 1) / totalSteps) * 100;
@@ -362,42 +360,29 @@ export default function SurveyForm() {
 
   // LinkedIn analysis
   async function handleLinkedInSubmit() {
-    const input = linkedinNeedManual ? linkedinManualText : linkedinUrl;
-    if (!input.trim()) return;
+    if (!linkedinUrl.trim()) return;
 
     setLinkedinLoading(true);
     setLinkedinError("");
 
     try {
-      const body = linkedinNeedManual
-        ? { manualText: linkedinManualText }
-        : { linkedinUrl: linkedinUrl };
-
       const res = await fetch("/api/analyze-linkedin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
+        body: JSON.stringify({ linkedinUrl }),
       });
 
       const result = await res.json();
 
-      if (res.status === 422 && result.error === "NEED_MANUAL") {
-        // LinkedIn blocked — ask for manual paste
-        setLinkedinNeedManual(true);
-        setLinkedinError(result.message);
-        setLinkedinLoading(false);
-        return;
-      }
-
       if (!res.ok) {
-        throw new Error(result.error || "Failed to analyze profile");
+        throw new Error(result.error || "Couldn't analyze that profile. Try uploading your resume instead.");
       }
 
       setData(result.surveyData);
       setAutoFilled(true);
       setStep(7);
     } catch (err) {
-      setLinkedinError(err instanceof Error ? err.message : "Failed to analyze profile");
+      setLinkedinError(err instanceof Error ? err.message : "Couldn't analyze that profile. Try uploading your resume instead.");
     } finally {
       setLinkedinLoading(false);
     }
@@ -569,74 +554,35 @@ export default function SurveyForm() {
                   </div>
                 </div>
 
-                {!linkedinNeedManual ? (
-                  <div className="flex gap-2">
-                    <input
-                      type="text"
-                      value={linkedinUrl}
-                      onChange={(e) => { setLinkedinUrl(e.target.value); setLinkedinError(""); }}
-                      placeholder="linkedin.com/in/yourname"
-                      className="flex-1 px-4 py-3 rounded-lg bg-white border border-gray-300 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-gray-400 focus:ring-1 focus:ring-gray-400"
-                      onKeyDown={(e) => e.key === "Enter" && linkedinUrl.trim() && handleLinkedInSubmit()}
-                    />
-                    <button
-                      onClick={handleLinkedInSubmit}
-                      disabled={!linkedinUrl.trim() || linkedinLoading}
-                      className="px-5 py-3 rounded-lg bg-gray-900 hover:bg-gray-800 text-white font-medium transition-colors disabled:opacity-50 flex items-center gap-2 shrink-0"
-                    >
-                      {linkedinLoading ? (
-                        <>
-                          <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none">
-                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                          </svg>
-                          Analyzing...
-                        </>
-                      ) : (
-                        "Analyze"
-                      )}
-                    </button>
-                  </div>
-                ) : (
-                  <div>
-                    <p className="text-gray-500 text-sm mb-3">
-                      Paste your LinkedIn headline and about section below:
-                    </p>
-                    <textarea
-                      value={linkedinManualText}
-                      onChange={(e) => { setLinkedinManualText(e.target.value); setLinkedinError(""); }}
-                      placeholder="e.g. Senior Product Manager at Stripe | Previously at Google&#10;&#10;I lead product strategy for payment infrastructure..."
-                      className="w-full px-4 py-3 rounded-lg bg-white border border-gray-300 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-gray-400 focus:ring-1 focus:ring-gray-400 h-32 resize-none"
-                    />
-                    <div className="flex gap-2 mt-3">
-                      <button
-                        onClick={() => { setLinkedinNeedManual(false); setLinkedinError(""); setLinkedinManualText(""); }}
-                        className="px-4 py-2 rounded-lg border border-gray-200 text-gray-500 hover:text-gray-700 text-sm"
-                      >
-                        Back
-                      </button>
-                      <button
-                        onClick={handleLinkedInSubmit}
-                        disabled={linkedinManualText.trim().length < 20 || linkedinLoading}
-                        className="flex-1 px-5 py-2 rounded-lg bg-gray-900 hover:bg-gray-800 text-white font-medium transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
-                      >
-                        {linkedinLoading ? (
-                          <>
-                            <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none">
-                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                            </svg>
-                            Analyzing...
-                          </>
-                        ) : (
-                          "Analyze Profile"
-                        )}
-                      </button>
-                    </div>
-                  </div>
-                )}
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={linkedinUrl}
+                    onChange={(e) => { setLinkedinUrl(e.target.value); setLinkedinError(""); }}
+                    placeholder="linkedin.com/in/yourname"
+                    className="flex-1 px-4 py-3 rounded-lg bg-white border border-gray-300 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-gray-400 focus:ring-1 focus:ring-gray-400"
+                    onKeyDown={(e) => e.key === "Enter" && linkedinUrl.trim() && handleLinkedInSubmit()}
+                  />
+                  <button
+                    onClick={handleLinkedInSubmit}
+                    disabled={!linkedinUrl.trim() || linkedinLoading}
+                    className="px-5 py-3 rounded-lg bg-gray-900 hover:bg-gray-800 text-white font-medium transition-colors disabled:opacity-50 flex items-center gap-2 shrink-0"
+                  >
+                    {linkedinLoading ? (
+                      <>
+                        <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                        </svg>
+                        Analyzing...
+                      </>
+                    ) : (
+                      "Analyze"
+                    )}
+                  </button>
+                </div>
 
-                {linkedinError && !linkedinNeedManual && (
+                {linkedinError && (
                   <p className="mt-2 text-red-600 text-sm">{linkedinError}</p>
                 )}
               </div>
