@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Inter_Tight, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -87,6 +88,20 @@ export default function RootLayout({
       lang="en"
       className={`${interTight.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
+      <head>
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-TPYM9FXJD1"
+          strategy="afterInteractive"
+        />
+        <Script id="gtag-init" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-TPYM9FXJD1');
+          `}
+        </Script>
+      </head>
       <body className="min-h-full flex flex-col" style={{ fontFamily: "var(--font-inter-tight), system-ui, sans-serif" }}>
         <script
           type="application/ld+json"
