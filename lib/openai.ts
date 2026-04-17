@@ -94,16 +94,41 @@ Return ONLY valid JSON matching this exact structure:
       "platform": "<e.g. 'YouTube', 'Coursera', 'Udemy'>",
       "duration": "<e.g. '15 min', '4 hours', '6 week course'>"
     }
-    ...min 5 items
+    ...min 5 items, include at least 2-3 videos specifically about using AI tools productively in their work
+  ],
+  "aiMasterySequence": [
+    {
+      "step": <number starting at 1>,
+      "title": "<descriptive title for this learning step>",
+      "description": "<2-3 sentences about what they'll learn in this step and how it applies to their specific role>",
+      "videoUrl": "<real YouTube URL>",
+      "videoTitle": "<exact YouTube video title>",
+      "channel": "<YouTube channel name>",
+      "duration": "<e.g. '12 min'>",
+      "keyTakeaways": ["<specific skill or concept they'll gain>", ...min 3 items]
+    }
+    ...provide exactly 6 steps in this learning sequence
+  ],
+  "skillsAIMap": [
+    {
+      "skill": "<specific skill or responsibility from their resume/survey>",
+      "currentApproach": "<how they likely do this task manually today — be specific>",
+      "aiApproach": "<exactly how AI can automate or augment this — step by step>",
+      "toolRecommendation": "<specific AI tool to use>",
+      "timeSavedPerWeek": "<e.g. '4-6 hours'>",
+      "proactiveAdvantage": "<what happens if THEY adopt this vs. someone else doing it — frame as competitive advantage with their employer>"
+    }
+    ...min 6 items. Map their SPECIFIC skills and daily tasks to AI automation opportunities. Each entry should feel like: 'You currently spend X hours doing Y. Here's how AI handles this in 10 minutes.' Frame each as a choice: either someone else will automate this part of your job (threatening), or YOU can be the one who brings this efficiency to your team (empowering).
   ],
   "automationPlaybook": [
     {
       "task": "<specific task they currently do manually>",
-      "howToAutomate": "<step-by-step explanation of how to automate this with AI>",
+      "howToAutomate": "<detailed step-by-step explanation — include exact prompts, workflows, and tool setup>",
       "timeSaved": "<e.g. '3-5 hours per week'>",
-      "difficulty": "<one of: easy, medium, advanced>"
+      "difficulty": "<one of: easy, medium, advanced>",
+      "examplePrompt": "<an actual AI prompt they can copy/paste to get started with this automation>"
     }
-    ...min 5 items
+    ...min 6 items. Be extremely specific — reference their actual tasks from the survey/resume. Include real prompts they can use with Claude or GPT.
   ],
   "futureProofStrategies": [
     {
@@ -129,4 +154,18 @@ CRITICAL REQUIREMENTS:
 - The tone should be direct and actionable — like advice from a mentor who knows their field
 - Reference specific AI models and capabilities (GPT-4, Claude, Midjourney, etc.) where relevant
 - If they provided a resume, deeply reference their actual experience and skills
-- The automationPlaybook should give them immediate wins they can implement today`;
+- The automationPlaybook should give them immediate wins they can implement today
+
+AI MASTERY SEQUENCE REQUIREMENTS:
+- This is a curated 6-step YouTube video learning path to help them become proficient with AI tools
+- The sequence should progress from beginner to advanced:
+  Step 1: Introduction to AI tools and why they matter for their role (general AI literacy)
+  Step 2: Getting started with Claude — basic prompting, conversations, and practical use cases
+  Step 3: Advanced Claude techniques — system prompts, structured outputs, and workflows for their job
+  Step 4: Building AI agents and automations — using Claude, GPT, or no-code tools to create agents that handle repetitive work
+  Step 5: Integrating AI into their daily workflow — practical examples specific to their industry
+  Step 6: Staying ahead — following AI developments, building an AI-first mindset, and career positioning
+- Every videoUrl must be a REAL YouTube URL that exists
+- Prioritize videos from channels like: Anthropic, AI Jason, Matt Wolfe, The AI Advantage, Fireship, All About AI, David Ondrej, WorldofAI, or other well-known AI educator channels
+- keyTakeaways should be specific and actionable, not vague
+- Tailor the descriptions to explain how each video helps THEIR specific role`;

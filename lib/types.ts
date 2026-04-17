@@ -63,11 +63,30 @@ export interface PaidReport extends FreeReport {
     platform: string;
     duration: string;
   }[];
+  aiMasterySequence?: {
+    step: number;
+    title: string;
+    description: string;
+    videoUrl: string;
+    videoTitle: string;
+    channel: string;
+    duration: string;
+    keyTakeaways: string[];
+  }[];
+  skillsAIMap?: {
+    skill: string;
+    currentApproach: string;
+    aiApproach: string;
+    toolRecommendation: string;
+    timeSavedPerWeek: string;
+    proactiveAdvantage: string;
+  }[];
   automationPlaybook: {
     task: string;
     howToAutomate: string;
     timeSaved: string;
     difficulty: "easy" | "medium" | "advanced";
+    examplePrompt?: string;
   }[];
   futureProofStrategies: {
     strategy: string;

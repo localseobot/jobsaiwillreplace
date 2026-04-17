@@ -349,6 +349,47 @@ export default function ProReportPage() {
             </section>
           )}
 
+          {/* Skills-to-AI Map */}
+          {report.skillsAIMap && report.skillsAIMap.length > 0 && (
+            <section className="mt-12">
+              <SectionHeader
+                title="Your Skills × AI Opportunities"
+                subtitle="How AI can transform each part of your job — adopt it before someone else does"
+              />
+              <div className="space-y-4">
+                {report.skillsAIMap.map((item, i) => (
+                  <div key={i} className="p-6 rounded-2xl border border-gray-200 bg-white">
+                    <div className="flex items-center justify-between mb-3">
+                      <h3 className="text-gray-900 font-semibold text-lg">{item.skill}</h3>
+                      <span className="text-xs font-medium px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 shrink-0 ml-2">
+                        Save {item.timeSavedPerWeek}/week
+                      </span>
+                    </div>
+                    <div className="grid md:grid-cols-2 gap-4 mb-4">
+                      <div className="p-4 rounded-xl bg-red-50/50 border border-red-100">
+                        <div className="text-xs font-semibold text-red-400 uppercase tracking-wider mb-2">How you do it now</div>
+                        <p className="text-gray-600 text-sm leading-relaxed">{item.currentApproach}</p>
+                      </div>
+                      <div className="p-4 rounded-xl bg-emerald-50/50 border border-emerald-100">
+                        <div className="text-xs font-semibold text-emerald-500 uppercase tracking-wider mb-2">How AI does it</div>
+                        <p className="text-gray-600 text-sm leading-relaxed">{item.aiApproach}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="text-xs px-2 py-1 rounded-md bg-gray-50 text-gray-600 border border-gray-200">
+                        {item.toolRecommendation}
+                      </span>
+                    </div>
+                    <div className="p-3 rounded-lg bg-amber-50/50 border border-amber-100">
+                      <div className="text-xs font-semibold text-amber-600 uppercase tracking-wider mb-1">Why you should act now</div>
+                      <p className="text-gray-600 text-sm">{item.proactiveAdvantage}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
           {/* Automation Playbook */}
           {report.automationPlaybook && report.automationPlaybook.length > 0 && (
             <section className="mt-12">
@@ -367,6 +408,12 @@ export default function ProReportPage() {
                       </div>
                     </div>
                     <p className="text-gray-600 text-sm leading-relaxed">{item.howToAutomate}</p>
+                    {item.examplePrompt && (
+                      <div className="mt-3 p-3 rounded-lg bg-gray-900 text-gray-300 text-xs font-mono leading-relaxed overflow-x-auto">
+                        <div className="text-gray-500 text-[10px] uppercase tracking-wider mb-1">Copy this prompt →</div>
+                        {item.examplePrompt}
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
@@ -508,6 +555,65 @@ export default function ProReportPage() {
                     </div>
                     <p className="text-gray-500 text-sm mt-1">{video.description}</p>
                   </a>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* AI Mastery Sequence */}
+          {report.aiMasterySequence && report.aiMasterySequence.length > 0 && (
+            <section className="mt-12">
+              <SectionHeader
+                title="Your AI Mastery Learning Path"
+                subtitle="A 6-step YouTube video sequence to become proficient with Claude and AI agents"
+              />
+              <div className="space-y-4">
+                {report.aiMasterySequence.map((item, i) => (
+                  <div key={i} className="p-6 rounded-2xl border border-gray-200 bg-white">
+                    <div className="flex items-start gap-4">
+                      <div className="w-10 h-10 rounded-full bg-brand-red text-white flex items-center justify-center font-bold shrink-0 text-sm">
+                        {item.step}
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="text-gray-900 font-semibold text-lg">{item.title}</h3>
+                        <p className="text-gray-500 text-sm mt-1 leading-relaxed">{item.description}</p>
+
+                        <a
+                          href={item.videoUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="mt-3 flex items-center gap-3 p-3 rounded-xl bg-gray-50 border border-gray-200 hover:border-brand-red/30 transition-colors group"
+                        >
+                          <div className="w-10 h-10 rounded-lg bg-red-100 text-red-600 flex items-center justify-center shrink-0">
+                            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                              <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                            </svg>
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="text-sm font-medium text-gray-900 group-hover:text-brand-red transition-colors truncate">
+                              {item.videoTitle}
+                            </div>
+                            <div className="text-xs text-gray-400 mt-0.5">
+                              {item.channel} · {item.duration}
+                            </div>
+                          </div>
+                          <svg className="w-4 h-4 text-gray-300 group-hover:text-brand-red transition-colors shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                          </svg>
+                        </a>
+
+                        {item.keyTakeaways && item.keyTakeaways.length > 0 && (
+                          <div className="mt-3 flex flex-wrap gap-2">
+                            {item.keyTakeaways.map((takeaway, j) => (
+                              <span key={j} className="text-xs px-2.5 py-1 rounded-full bg-brand-red/5 text-brand-red border border-brand-red/10">
+                                {takeaway}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
                 ))}
               </div>
             </section>

@@ -36,7 +36,7 @@ Education Level: ${surveyData.educationLevel}
         },
       ],
       temperature: 0.7,
-      max_tokens: tier === "paid" ? 10000 : 1000,
+      max_tokens: tier === "paid" ? 16000 : 1000,
     });
 
     const content = completion.choices[0]?.message?.content || "";
