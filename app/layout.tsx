@@ -127,6 +127,16 @@ export default function RootLayout({
           }}
         />
         {children}
+        {/* Ad delivery (apitiny). `afterInteractive` injects the tag at the
+            end of <body> after hydration — equivalent to the vendor's
+            "just before </body>" placement guidance, with proper handling
+            of client-side navigations. */}
+        <Script
+          src="https://cdn.apitiny.net/scripts/v2.0/main.js"
+          strategy="afterInteractive"
+          data-site-id="6a05fe3a8fb01223cef121a4"
+          data-test-mode="false"
+        />
       </body>
     </html>
   );
